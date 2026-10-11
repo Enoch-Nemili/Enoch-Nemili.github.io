@@ -3,834 +3,1054 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Enoch Nemili: software engineer in Washington, DC building AI infrastructure, RAG and MCP servers, LLM evals, and the backend and data systems underneath.">
+<meta property="og:title" content="Enoch Nemili">
+<meta property="og:description" content="Software engineer in Washington, DC: AI infrastructure, RAG and MCP servers, LLM evals, backend and data systems.">
+<meta property="og:image" content="https://enoch-nemili.github.io/assets/papermind.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#090B11">
+<link rel="icon" href="assets/photo.jpg">
 <title>Enoch Nemili</title>
-<meta name="description" content="Enoch Nemili: software engineer building AI infrastructure, RAG and MCP servers, and the data systems underneath.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout concept: a cost-aware cascade. A live request stream runs behind the hero (most traffic takes the cheap path, ~1% escalates to the ember path).
-   The rest of the page is an operator console: a bento of measured numbers, a project explorer, a timeline, and a ⌘K command palette. */
+/* Layout: a tactical game-client lobby. Top bar of tabs, then a three-column lobby around a five-slot
+   lineup (Enoch in the middle, four projects as teammates), a FIND MATCH button that opens a hiring
+   "match found" screen, and below it the client's other tabs as sections: stats, collection, career,
+   arsenal, records. One deliberate world: dark slate and champion gold, single theme. */
 :root {
-  --ink: #07090D;        /* page */
-  --panel: #0E131B;      /* raised surfaces */
-  --panel-2: #131A24;    /* hover / active surfaces */
-  --line: #1C2431;       /* hairlines */
-  --line-2: #2A3445;     /* stronger hairlines */
-  --text: #E8ECF2;       /* primary text */
-  --muted: #8A94A6;      /* secondary text */
-  --cool: #6F8FC4;       /* the cheap path */
-  --ember: #FF7A3D;      /* the expensive path: the one accent */
-  --ember-2: #FFB067;    /* ember highlight for gradients */
-  --ember-soft: rgba(255, 122, 61, .13);
-  --ok: #4ADE9B;         /* status: available */
-  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --body: "Geist", "Inter", "Segoe UI", system-ui, sans-serif;
-  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --gutter: clamp(16px, 4vw, 40px);
-  --max: 1200px;
-  --r: 20px;
+  --void: #090B11;       /* page */
+  --panel: #111724;      /* slots and cards */
+  --panel-2: #182133;    /* hover / raised */
+  --line: #29334A;       /* frames */
+  --gold: #D4B06A;       /* the one accent */
+  --gold-hi: #F2DCA6;    /* gold highlight */
+  --red: #E9485A;        /* the call to action */
+  --ready: #53D3B4;      /* status: ready / shipped */
+  --text: #EDEAE3;
+  --muted: #8E97A8;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --ui: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --gutter: clamp(16px, 3vw, 40px);
+  --top: calc(56px + env(safe-area-inset-top, 0px));
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--ink); color: var(--text);
-  font-family: var(--body); font-size: 16px; line-height: 1.6;
-  -webkit-font-smoothing: antialiased; overflow-x: hidden;
-}
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--top) + 12px); background: var(--void); }
+body { margin: 0; background: var(--void); color: var(--text); font: 400 16px/1.55 var(--body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img { max-width: 100%; display: block; }
 a { color: inherit; }
 button { font: inherit; color: inherit; }
-::selection { background: var(--ember); color: var(--ink); }
-:focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; border-radius: 8px; }
-.wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
-.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-h1, h2, h3 { font-family: var(--display); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: -.025em; }
-.grad { background: linear-gradient(100deg, var(--ember) 10%, var(--ember-2) 45%, var(--ember) 80%); background-size: 200% 100%;
-  -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 6s linear infinite; }
-@keyframes sheen { to { background-position: -200% 0; } }
+:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 3px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.mono { font-family: var(--mono); }
+.label { font-family: var(--ui); font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 
-/* grain + aurora (fixed, decorative) */
-.grain { position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .06; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
-.progress { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; height: 2px; width: 100%; z-index: 70; transform-origin: 0 50%; transform: scaleX(0);
-  background: linear-gradient(90deg, var(--ember), var(--ember-2)); box-shadow: 0 0 12px var(--ember); }
+/* ---------- atmosphere ---------- */
+.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  background:
+    radial-gradient(50% 55% at 66% 52%, rgba(150,112,48,.20), transparent 70%),
+    radial-gradient(35% 40% at 22% 18%, rgba(150,112,48,.10), transparent 70%),
+    #06070A; }
+.bg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(125% 95% at 50% 50%, transparent 52%, rgba(0,0,0,.72)); }
+main, footer { position: relative; z-index: 1; }
+#veins { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* thick gold slashes, top-left and bottom-right */
+.slash { position: absolute; width: 90vmax; height: clamp(16px, 1.5vw, 26px); transform-origin: 0 50%;
+  background: linear-gradient(90deg, #E9D198, #C9A55E 35%, #8E6E33 75%, rgba(142,110,51,0));
+  box-shadow: 0 0 34px rgba(212,176,106,.30); }
+.slash.thin { height: 2px; box-shadow: none; opacity: .7; }
+.slash.a { left: 34vw; top: 56px; transform: rotate(137deg); }
+.slash.a.thin { left: calc(34vw - 34px); top: 64px; }
+.slash.b { left: 80vw; top: calc(100% + 10px); transform: rotate(-43deg); }
+.slash.b.thin { left: calc(80vw + 40px); top: calc(100% + 18px); }
+#motes { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-/* ---------- buttons, chips ---------- */
-.btn { position: relative; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer;
-  font: 500 14px/1 var(--body); padding: 12px 18px; border-radius: 999px; border: 1px solid var(--line-2);
-  background: rgba(14,19,27,.7); color: var(--text); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  transition: transform .25s cubic-bezier(.2,.8,.2,1), border-color .2s, background .2s, box-shadow .25s; will-change: transform; }
-.btn:hover { border-color: var(--muted); background: var(--panel-2); }
-.btn.primary { background: var(--ember); border-color: var(--ember); color: #170A02; font-weight: 600; box-shadow: 0 8px 30px -10px rgba(255,122,61,.8); }
-.btn.primary:hover { background: #FF8C55; box-shadow: 0 10px 40px -8px rgba(255,122,61,.9); }
-.btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
-.btn svg { width: 16px; height: 16px; flex: none; }
-.kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border: 1px solid var(--line-2); border-bottom-width: 2px; border-radius: 6px; color: var(--muted); }
-.chip { font-family: var(--mono); font-size: 12px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--panel); white-space: nowrap; }
-.chip.hot { color: var(--ember); border-color: rgba(255,122,61,.35); background: var(--ember-soft); }
-.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+/* ---------- top bar ---------- */
+.topbar { position: sticky; top: 0; z-index: 40; display: flex; align-items: stretch; gap: 8px;
+  padding-top: env(safe-area-inset-top, 0px); height: var(--top);
+  background: rgba(14,19,29,.94); border-bottom: 1px solid var(--line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.mark { display: flex; align-items: center; gap: 12px; padding: 0 34px 0 var(--gutter); text-decoration: none;
+  background: var(--text); color: var(--void); clip-path: polygon(0 0, 100% 0, calc(100% - 24px) 100%, 0 100%); flex: none; }
+.mark .mono-badge { font-family: var(--display); font-weight: 900; font-size: 22px; letter-spacing: -.02em; line-height: 1;
+  border: 2px solid var(--void); padding: 3px 5px 2px; transform: skewX(-10deg); }
+.mark b { font-family: var(--display); font-weight: 900; font-size: 30px; letter-spacing: .01em; line-height: 1; }
+.tabs { display: flex; align-items: stretch; gap: 2px; margin: 0; padding: 0; list-style: none; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs li { display: flex; }
+.tabs a { display: flex; align-items: center; gap: 8px; padding: 0 14px; text-decoration: none; color: var(--muted);
+  font-family: var(--ui); font-weight: 600; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap;
+  border-bottom: 2px solid transparent; transition: color .2s, border-color .2s, background .2s; }
+.tabs a svg { width: 20px; height: 20px; flex: none; }
+.tabs a:hover { color: var(--text); background: rgba(255,255,255,.03); }
+.tabs a.on { color: var(--gold-hi); border-bottom-color: var(--gold); }
+.wallet { display: flex; align-items: center; gap: 18px; padding: 0 8px; flex: none; }
+.wallet span { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 13px; color: var(--text); white-space: nowrap; }
+.wallet i { display: inline-grid; place-items: center; width: 20px; height: 20px; border: 1.5px solid var(--muted); border-radius: 50%;
+  font: 600 10px/1 var(--ui); font-style: normal; color: var(--muted); }
+.gear { flex: none; display: grid; place-items: center; width: 56px; background: none; border: 0; border-left: 1px solid var(--line); cursor: pointer; color: var(--text); }
+.gear svg { width: 26px; height: 26px; transition: transform .5s; }
+.gear:hover svg { transform: rotate(90deg); }
 
-/* spotlight surface: follows the pointer */
-.spot { position: relative; isolation: isolate; }
-.spot::before { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1; opacity: 0; transition: opacity .35s; pointer-events: none;
-  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(255,122,61,.10), transparent 65%); }
-.spot:hover::before { opacity: 1; }
+/* ---------- lobby ---------- */
+.lobby { display: grid; grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) minmax(230px, 270px) 52px; gap: 24px;
+  padding: 28px 0 20px var(--gutter); max-width: 1680px; margin: 0 auto; align-items: start; }
+.left, .right { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; min-width: 0; }
 
-/* ---------- nav ---------- */
-.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: color-mix(in srgb, var(--ink) 72%, transparent);
-  backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%); border-bottom: 1px solid var(--line); }
-.nav .wrap { display: flex; align-items: center; gap: 20px; padding-block: 12px; }
-.brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 800; font-size: 18px; text-decoration: none; }
-.brand img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; object-position: 50% 42%; border: 1px solid var(--line-2); }
-.nav ul { display: flex; gap: 4px; list-style: none; margin: 0 0 0 auto; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: rgba(14,19,27,.6); }
-.nav ul a { display: block; padding: 7px 13px; border-radius: 999px; text-decoration: none; color: var(--muted); font-size: 13px; transition: color .2s, background .2s; }
-.nav ul a:hover, .nav ul a.on { color: var(--text); background: var(--panel-2); }
-.cmdk { display: inline-flex; align-items: center; gap: 10px; padding: 8px 10px 8px 14px; border-radius: 999px; border: 1px solid var(--line-2);
-  background: var(--panel); color: var(--muted); font-size: 13px; cursor: pointer; transition: border-color .2s, color .2s; }
-.cmdk:hover { border-color: var(--muted); color: var(--text); }
-@media (max-width: 900px) { .nav ul { display: none; } .cmdk { margin-left: auto; } }
-@media (max-width: 420px) { .cmdk .lbl { display: none; } }
+.pass { text-shadow: 0 2px 14px rgba(0,0,0,.85); display: grid; gap: 6px; text-decoration: none; padding: 4px 0 12px; }
+.pass .label { color: var(--text); font-size: 14px; }
+.pass h1 { font-family: var(--display); font-weight: 900; font-size: clamp(32px, 2.6vw, 42px); line-height: .9; letter-spacing: .005em; text-transform: uppercase; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; overflow-wrap: anywhere; }
+.pass h1 .arrow { display: grid; place-items: center; width: 30px; height: 30px; flex: none; border: 1.5px solid var(--text); transform: rotate(45deg); transition: background .2s; }
+.pass h1 .arrow svg { width: 14px; height: 14px; transform: rotate(-45deg); }
+.pass:hover .arrow { background: var(--gold); border-color: var(--gold); color: var(--void); }
+.pass .sub { color: var(--muted); font-size: 15px; max-width: 30ch; }
+.dots { display: flex; gap: 9px; margin-top: 6px; }
+.dots i { width: 8px; height: 8px; transform: rotate(45deg); background: #3A4459; }
+.dots i.on { background: var(--ready); box-shadow: 0 0 10px rgba(83,211,180,.7); }
 
-/* ---------- hero ---------- */
-.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
-#flow { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.aurora { position: absolute; inset: -20% -10% auto auto; width: 70vw; height: 70vw; max-width: 900px; max-height: 900px; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(255,122,61,.18), transparent 70%); filter: blur(30px); animation: drift 18s ease-in-out infinite alternate; }
-@keyframes drift { to { transform: translate(-8%, 10%) scale(1.1); } }
-.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(90deg, var(--ink) 0%, rgba(7,9,13,.82) 40%, rgba(7,9,13,.25) 72%, rgba(7,9,13,.55) 100%); }
-.hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: clamp(32px, 5vw, 72px);
-  align-items: center; padding-block: clamp(64px, 10vw, 128px) clamp(48px, 7vw, 88px); }
-.status { display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px 6px 10px; border: 1px solid var(--line-2); border-radius: 999px;
-  background: rgba(14,19,27,.7); font-size: 13px; color: var(--muted); }
-.status i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(74,222,155,.6); animation: ping 2s infinite; }
-@keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(74,222,155,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,155,0); } }
-.hero h1 { font-size: clamp(42px, 6.6vw, 96px); line-height: .96; margin-top: 22px; }
-.hero h1 .w { display: inline-block; animation: rise .9s cubic-bezier(.2,.8,.2,1) both; }
-@keyframes rise { from { transform: translateY(.4em); filter: blur(8px); } to { transform: none; filter: none; } }
-.role-line { margin-top: 22px; font-family: var(--mono); font-size: clamp(14px, 1.6vw, 16px); color: var(--muted); }
-.role-line b { color: var(--text); font-weight: 500; }
-.role-line .caret { display: inline-block; width: 8px; height: 1.1em; vertical-align: -2px; background: var(--ember); margin-left: 2px; animation: blink 1s steps(1) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-.lede { font-size: clamp(16px, 1.8vw, 19px); color: var(--muted); max-width: 54ch; margin: 18px 0 0; }
-.lede strong { color: var(--text); font-weight: 500; }
-.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
-.readout { display: inline-flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 30px; font-family: var(--mono); font-size: 12px; color: var(--muted);
-  padding: 9px 14px; border: 1px solid var(--line); border-radius: 12px; background: rgba(14,19,27,.7); font-variant-numeric: tabular-nums; }
-.readout b { color: var(--text); font-weight: 500; }
-.readout .hot b { color: var(--ember); }
+.mode { display: grid; gap: 6px; }
+.mode .art { position: relative; height: 128px; overflow: hidden; border: 1px solid var(--line);
+  background: linear-gradient(115deg, rgba(212,176,106,.22), transparent 55%), linear-gradient(180deg, #1B2436, #0E131D); }
+.mode .art::before { content: ""; position: absolute; right: -30px; top: -40px; width: 180px; height: 220px; border: 1px solid rgba(212,176,106,.35); transform: rotate(35deg); }
+.mode .art::after { content: ""; position: absolute; right: 30px; top: -20px; width: 2px; height: 200px; background: linear-gradient(transparent, var(--gold-hi), transparent); transform: rotate(35deg); }
+.mode .art b { position: absolute; left: 14px; bottom: 10px; display: flex; align-items: center; gap: 10px;
+  font-family: var(--display); font-weight: 900; font-size: 28px; letter-spacing: .02em; text-transform: uppercase; }
+.mode .art b svg { width: 28px; height: 28px; color: var(--gold-hi); }
+.mode .art .live { position: absolute; left: 14px; top: 12px; display: flex; align-items: center; gap: 8px; font: 600 12px/1 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--ready); }
+.mode .art .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--ready); animation: ping 2s infinite; }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(83,211,180,.7); } 70% { box-shadow: 0 0 0 8px rgba(83,211,180,0); } 100% { box-shadow: 0 0 0 0 rgba(83,211,180,0); } }
+.act { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 50px; padding: 0 14px 0 16px;
+  background: var(--panel); border: 1px solid var(--line); border-left: 3px solid #3A4459; text-decoration: none; cursor: pointer; text-align: left; width: 100%;
+  font-family: var(--ui); font-weight: 600; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; transition: background .2s, border-color .2s; }
+.act svg { width: 22px; height: 22px; flex: none; color: var(--text); }
+.act:hover { background: var(--panel-2); border-left-color: var(--gold); }
+.act .switch { width: 46px; height: 20px; border: 1.5px solid var(--ready); border-radius: 10px; position: relative; flex: none; }
+.act .switch::after { content: ""; position: absolute; right: 2px; top: 2px; width: 13px; height: 13px; border-radius: 50%; background: var(--ready); }
+.act.static { cursor: default; border-left-color: var(--ready); }
+.act.static:hover { background: var(--panel); }
 
-/* photo card */
-.card-3d { perspective: 1200px; min-width: 0; justify-self: end; width: 100%; max-width: 380px; }
-.photo { position: relative; border-radius: 28px; padding: 1px; transform-style: preserve-3d; transition: transform .3s ease-out;
-  background: conic-gradient(from var(--a, 0deg), var(--ember), transparent 30%, var(--cool) 50%, transparent 70%, var(--ember)); animation: spin 8s linear infinite; }
-@property --a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-@keyframes spin { to { --a: 360deg; } }
-.photo-inner { position: relative; border-radius: 27px; overflow: hidden; background: var(--panel); }
-.photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 40%; }
-.photo-inner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(7,9,13,.92)); }
-.photo .cap { position: absolute; left: 18px; right: 18px; bottom: 16px; z-index: 2; }
-.photo .cap b { display: block; font-family: var(--display); font-size: 22px; letter-spacing: -.02em; }
-.photo .cap span { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-.float { position: absolute; z-index: 3; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: 14px; background: rgba(14,19,27,.82);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 12px; color: var(--muted); box-shadow: 0 20px 40px -20px rgba(0,0,0,.8);
-  transform: translateZ(40px); animation: bob 6s ease-in-out infinite; white-space: nowrap; }
-.float b { display: block; font-family: var(--display); font-size: 20px; color: var(--text); letter-spacing: -.02em; line-height: 1.1; }
-.float.f1 { top: 22px; left: -26px; } .float.f2 { top: 46%; right: -22px; animation-delay: -2s; } .float.f3 { bottom: 92px; left: -30px; animation-delay: -4s; }
-.float.f2 b { color: var(--ember); }
-@keyframes bob { 50% { translate: 0 -8px; } }
-@media (max-width: 900px) {
-  .hero .wrap { grid-template-columns: 1fr; }
-  .card-3d { justify-self: start; max-width: 300px; }
-  .float.f1 { left: auto; right: -14px; } .float.f3 { left: -10px; }
-}
-@media (max-width: 420px) { .float.f2 { right: -8px; } .float.f3 { display: none; } }
+/* centre */
+.center { display: grid; gap: 22px; justify-items: center; min-width: 0; }
+.dailies { text-shadow: 0 2px 10px #000, 0 0 2px #000; display: flex; align-items: center; gap: 18px; padding-top: 4px; }
+.dailies .q { text-align: right; font-family: var(--ui); font-weight: 600; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; line-height: 1.25; }
+.dailies .q:last-child { text-align: left; }
+.dailies .q span { display: block; color: var(--muted); font-family: var(--mono); font-size: 13px; letter-spacing: 0; text-transform: none; }
+.dailies .q span b { color: var(--text); font-weight: 500; }
+.dia { position: relative; width: 50px; height: 50px; display: grid; place-items: center; flex: none; }
+.dia::before { content: ""; position: absolute; inset: 7px; border: 1.5px solid var(--text); transform: rotate(45deg); background: #121A28; }
+.dia b { position: relative; font-family: var(--display); font-weight: 800; font-size: 26px; }
+.dailies .sep { width: 1px; height: 40px; background: var(--muted); opacity: .6; }
 
-/* ---------- marquee ---------- */
-.marquee { border-bottom: 1px solid var(--line); overflow: hidden; padding-block: 16px; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
-.track { display: flex; gap: 28px; width: max-content; animation: scroll 40s linear infinite; }
-.marquee:hover .track { animation-play-state: paused; }
-.track span { font-family: var(--mono); font-size: 13px; color: var(--muted); white-space: nowrap; display: inline-flex; align-items: center; gap: 28px; }
-.track span::after { content: "◆"; font-size: 8px; color: var(--ember); opacity: .7; }
-@keyframes scroll { to { transform: translateX(-50%); } }
+.lineup { display: grid; grid-template-columns: .82fr .94fr 1.3fr .94fr .82fr; gap: clamp(6px, .9vw, 12px); width: 100%; max-width: 860px; align-items: start; }
+.slot { position: relative; display: block; text-decoration: none; cursor: pointer; border: 0; padding: 0; background: none; text-align: center; width: 100%;
+  filter: drop-shadow(0 18px 30px rgba(0,0,0,.45)); transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.slot:nth-child(1), .slot:nth-child(5) { margin-top: 44px; }
+.slot:nth-child(2), .slot:nth-child(4) { margin-top: 22px; }
+.slot .frame { display: block; position: relative; aspect-ratio: 1 / 2.45; background: #4A5670; clip-path: polygon(0 0, 100% 0, 100% 86%, 50% 100%, 0 86%); }
+.slot .in { position: absolute; inset: 1.5px; display: flex; flex-direction: column; overflow: hidden;
+  background: linear-gradient(180deg, #16203A 0%, #0F1626 70%, #0C111C 100%); clip-path: polygon(0 0, 100% 0, 100% 86%, 50% 100%, 0 86%); }
+.slot .cap { height: 3px; background: #6E7A93; flex: none; }
+.slot .pic { position: relative; height: 38%; flex: none; overflow: hidden; }
+.slot .pic img { width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%; filter: saturate(.85) brightness(.8); transition: transform .5s, filter .3s; }
+.slot .pic::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, #101727 100%); }
+.slot .txt { display: grid; gap: 6px; padding: 12px 8px 0; justify-items: center; }
+.slot .txt b { max-width: 100%; overflow-wrap: anywhere; font-family: var(--display); font-weight: 800; font-size: clamp(15px, 1.35vw, 21px); line-height: .95; text-transform: uppercase; letter-spacing: .01em; }
+.slot .txt span { font-family: var(--ui); font-size: 13px; font-weight: 500; letter-spacing: .06em; color: var(--muted); line-height: 1.2; }
+.slot .ver { margin-top: 4px; font: 500 11px/1 var(--mono); color: var(--ready); border: 1px solid rgba(83,211,180,.45); padding: 4px 6px; }
+.slot .plus { margin-top: auto; margin-bottom: 26%; align-self: center; display: grid; place-items: center; width: 30px; height: 30px; border: 1.5px solid #8C97AE; transform: rotate(45deg); color: #C9D0DD; transition: background .2s, color .2s; }
+.slot .plus svg { width: 14px; height: 14px; transform: rotate(-45deg); }
+.slot:hover, .slot:focus-visible { transform: translateY(-8px); }
+.slot:hover .pic img { transform: scale(1.06); filter: none; }
+.slot:hover .plus, .slot:focus-visible .plus { background: var(--gold); border-color: var(--gold); color: var(--void); }
+.slot:hover .frame { background: var(--gold); }
+.slot:focus-visible { outline: none; }
+.slot:focus-visible .frame { background: var(--gold-hi); }
 
-/* ---------- sections ---------- */
-section { padding-block: clamp(72px, 10vw, 128px); }
-.sec-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; margin-bottom: 40px; }
-.sec-head h2 { font-size: clamp(34px, 5vw, 60px); line-height: 1; }
-.sec-head p { color: var(--muted); max-width: 44ch; margin: 0; }
-.sec-head .eyebrow { display: block; margin-bottom: 14px; color: var(--ember); }
+.slot.me { cursor: default; }
+.slot.me:hover { transform: none; }
+.slot.me .frame { aspect-ratio: 1 / 2.05; background: var(--gold); }
+.slot.me:hover .frame { background: var(--gold); }
+.slot.me .in { background: linear-gradient(180deg, #1A2338, #0E1422); }
+.slot.me .photo { position: relative; height: 54%; flex: none; overflow: hidden; }
+.slot.me .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+.slot.me .photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,14,22,.35), transparent 30%, transparent 70%, rgba(14,20,32,.9)); }
+.lvl { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); z-index: 3; display: grid; place-items: center; width: 78px; height: 30px;
+  background: #0F1522; border: 1.5px solid var(--gold-hi); clip-path: polygon(14% 0, 86% 0, 100% 50%, 86% 100%, 14% 100%, 0 50%);
+  font: 500 13px/1 var(--mono); color: var(--text); }
+.sig { position: absolute; top: 10px; right: 10px; z-index: 2; display: flex; align-items: flex-end; gap: 2px; height: 16px; }
+.sig i { width: 3px; background: var(--ready); }
+.sig i:nth-child(1) { height: 25%; } .sig i:nth-child(2) { height: 50%; } .sig i:nth-child(3) { height: 75%; } .sig i:nth-child(4) { height: 100%; }
+.ready { display: grid; place-items: center; height: 26px; flex: none; background: rgba(83,211,180,.12); border-bottom: 2px solid var(--ready);
+  font: 700 14px/1 var(--ui); letter-spacing: .14em; color: var(--ready); }
+.slot.me .who { display: grid; gap: 2px; padding: 12px 10px 0; }
+.slot.me .who b { font-family: var(--ui); font-weight: 700; font-size: clamp(18px, 1.6vw, 22px); letter-spacing: .04em; color: var(--gold-hi); line-height: 1.05; }
+.slot.me .who span { font-family: var(--ui); font-size: 14px; color: var(--muted); letter-spacing: .04em; }
+.slot.me .chev { margin-top: auto; margin-bottom: 18%; display: flex; justify-content: center; gap: 30%; }
+.slot.me .chev i { width: 16px; height: 34px; background: var(--gold); opacity: .85; }
+.slot.me .chev i:first-child { clip-path: polygon(0 0, 100% 40%, 100% 100%, 0 60%); }
+.slot.me .chev i:last-child { clip-path: polygon(0 40%, 100% 0, 100% 60%, 0 100%); }
 
-/* ---------- bento: by the numbers ---------- */
-.bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: minmax(150px, auto); gap: 14px; }
-.tile { border: 1px solid var(--line); border-radius: var(--r); background: linear-gradient(180deg, var(--panel), rgba(14,19,27,.6)); padding: 22px;
-  display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-width: 0; overflow: hidden; transition: border-color .25s, transform .25s; }
-.tile:hover { border-color: var(--line-2); transform: translateY(-2px); }
-.tile .num { font-family: var(--display); font-weight: 700; font-size: clamp(40px, 5vw, 64px); letter-spacing: -.035em; line-height: 1; font-variant-numeric: tabular-nums; }
-.tile .num small { font-size: .45em; color: var(--muted); font-weight: 600; margin-left: 4px; letter-spacing: 0; }
-.tile .lbl { color: var(--muted); font-size: 14px; line-height: 1.45; }
-.tile .src { font-family: var(--mono); font-size: 11px; color: var(--ember); letter-spacing: .08em; text-transform: uppercase; }
-.t-a { grid-column: span 3; grid-row: span 2; }
-.t-b { grid-column: span 3; } .t-c { grid-column: span 3; }
-.t-d, .t-e, .t-f { grid-column: span 2; }
-.t-a .num { font-size: clamp(64px, 9vw, 120px); }
-.spark { width: 100%; height: auto; max-height: 140px; display: block; }
-.bars { display: grid; gap: 10px; }
-.bar { display: grid; grid-template-columns: 110px 1fr 52px; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); font-family: var(--mono); }
-.bar .fill { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
-.bar .fill i { display: block; height: 100%; border-radius: inherit; background: var(--cool); width: var(--w); transition: width 1.2s cubic-bezier(.2,.8,.2,1); }
-.bar.best .fill i { background: linear-gradient(90deg, var(--ember), var(--ember-2)); }
+.find-wrap { display: grid; gap: 8px; justify-items: center; }
+.find { position: relative; min-width: 240px; padding: 12px 40px; border: 0; cursor: pointer; background: var(--red); color: #fff;
+  font-family: var(--display); font-weight: 800; font-size: 30px; letter-spacing: .03em; text-transform: uppercase; line-height: 1;
+  outline: 2px solid rgba(255,255,255,.85); outline-offset: 3px; transition: filter .2s, transform .2s; }
+.find:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.find:focus-visible { outline-color: var(--gold-hi); }
+.find-wrap small { text-shadow: 0 1px 8px #000; font-family: var(--ui); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+/* right column: news cards */
+.news { position: relative; display: grid; text-decoration: none; overflow: hidden; border: 1px solid #3A4459; background: var(--panel); transition: border-color .2s, transform .2s; }
+.news:hover { border-color: var(--gold); transform: translateY(-2px); }
+.news .head { padding: 14px 14px 12px; display: grid; gap: 6px; }
+.news h3 { font-family: var(--display); font-weight: 800; font-size: 25px; line-height: .95; text-transform: uppercase; letter-spacing: .01em; }
+.news p { font-size: 14px; line-height: 1.4; color: #C6CBD5; }
+.news .k { font: 500 12px/1 var(--mono); color: var(--gold); letter-spacing: .04em; }
+.news.feat .visual { height: 128px; position: relative; overflow: hidden;
+  background: radial-gradient(80% 90% at 70% 10%, rgba(212,176,106,.35), transparent 60%), linear-gradient(160deg, #23304A, #0D1320); }
+.news.feat .visual .score { position: absolute; left: 14px; top: 16px; display: flex; align-items: baseline; gap: 10px; font-family: var(--display); font-weight: 900; line-height: .85; }
+.news.feat .visual .score s { text-decoration: none; font-size: 44px; color: #7F8AA0; }
+.news.feat .visual .score em { font-style: normal; font-size: 22px; color: var(--gold); }
+.news.feat .visual .score b { font-size: 64px; color: var(--gold-hi); text-shadow: 0 0 24px rgba(242,220,166,.35); }
+.news.feat .visual .cap2 { position: absolute; left: 14px; bottom: 10px; font: 500 12px/1.2 var(--mono); color: #C6CBD5; }
+.news.mission { border-color: rgba(83,211,180,.4); background: linear-gradient(135deg, rgba(83,211,180,.1), var(--panel) 60%); }
+.news.mission .k { color: var(--ready); }
+.news.notes { border-left: 3px solid var(--red); }
+.news.notes h3 { font-size: 22px; }
+
+/* friends rail */
+.rail { display: grid; gap: 8px; align-content: start; justify-items: center; padding: 8px 0; background: rgba(14,19,29,.85); border-left: 1px solid var(--line); min-height: 100%; }
+.rail a, .rail button { position: relative; display: grid; place-items: center; width: 40px; height: 40px; border: 0; background: #1A2232; cursor: pointer; text-decoration: none; transition: background .2s; }
+.rail a:hover, .rail button:hover { background: var(--panel-2); }
+.rail svg { width: 20px; height: 20px; }
+.rail .av { width: 42px; height: 42px; padding: 0; background: none; border: 2px solid var(--gold); }
+.rail .av img { width: 100%; height: 100%; object-fit: cover; }
+.rail .av::after { content: ""; position: absolute; right: -4px; bottom: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--ready); border: 2px solid var(--void); }
+.rail hr { width: 26px; border: 0; border-top: 1px solid var(--line); margin: 4px 0; }
+
+.chat { grid-column: 1 / -2; display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: rgba(9,11,17,.7); border-top: 1px solid var(--line); font-size: 15px; min-width: 0; }
+.chat .label { color: var(--muted); letter-spacing: .06em; flex: none; }
+.chat .msg { color: #C6CBD5; min-width: 0; }
+.chat .msg b { color: var(--ready); font-weight: 600; }
+
+/* ---------- sections (the client's other tabs) ---------- */
+.sec { max-width: 1280px; margin: 0 auto; padding: 72px var(--gutter) 0; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 40px; padding-bottom: 18px; margin-bottom: 28px; border-bottom: 1px solid var(--line); position: relative; }
+.sec-head::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 120px; height: 2px; background: var(--gold); }
+.sec-head h2 { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 6vw, 76px); line-height: .88; text-transform: uppercase; letter-spacing: .005em; }
+.sec-head .label { display: block; margin-bottom: 8px; color: var(--gold); }
+.sec-head p { max-width: 46ch; color: var(--muted); font-size: 16px; }
+
+/* stats */
+.stats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.stat { background: var(--panel); border: 1px solid var(--line); padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0; position: relative; }
+.stat::before { content: ""; position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+.stat .src { font: 500 12px/1.3 var(--mono); color: var(--muted); letter-spacing: .02em; }
+.stat .num { font-family: var(--display); font-weight: 800; font-size: clamp(46px, 5vw, 66px); line-height: .85; color: var(--gold-hi); font-variant-numeric: tabular-nums; }
+.stat .num small { font-size: .42em; color: var(--gold); margin-left: 4px; }
+.stat .lbl { color: #C6CBD5; font-size: 15px; line-height: 1.45; }
+.s-a { grid-column: span 3; grid-row: span 2; }
+.s-b { grid-column: span 3; }
+.s-c { grid-column: span 3; }
+.s-d, .s-e, .s-f { grid-column: span 2; }
+.bars { display: grid; gap: 9px; margin-top: 4px; }
+.bar { display: grid; grid-template-columns: 112px minmax(0, 1fr) 48px; align-items: center; gap: 10px; font: 500 13px/1 var(--mono); color: var(--muted); }
+.bar .track { height: 10px; background: #1A2232; position: relative; }
+.bar .track i { position: absolute; inset: 0 auto 0 0; width: var(--w); background: #4A5670; }
 .bar.best { color: var(--text); }
-.bar b { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }
-@media (max-width: 900px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } .t-a { grid-column: span 2; grid-row: auto; } .t-b, .t-c { grid-column: span 2; } .t-d, .t-e, .t-f { grid-column: span 1; } }
-@media (max-width: 460px) { .t-d, .t-e, .t-f { grid-column: span 2; } .bar { grid-template-columns: 92px 1fr 46px; } }
+.bar.best .track i { background: linear-gradient(90deg, var(--gold), var(--gold-hi)); }
+.bar b { text-align: right; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+.axis { display: flex; justify-content: space-between; margin-left: 122px; margin-right: 58px; font: 400 11px/1 var(--mono); color: var(--muted); }
+.pair { display: flex; align-items: baseline; gap: 12px; font-family: var(--display); font-weight: 800; line-height: .85; }
+.pair s { text-decoration: none; font-size: clamp(36px, 4vw, 52px); color: #6F7A90; }
+.pair em { font-style: normal; color: var(--gold); font-size: 26px; }
+.pair b { font-size: clamp(46px, 5vw, 66px); color: var(--gold-hi); }
 
-/* ---------- summary ---------- */
-.summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 6vw, 80px); align-items: start; }
-.summary h2 { font-size: clamp(28px, 3.6vw, 44px); line-height: 1.1; }
-.summary p { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
-.summary p strong { color: var(--text); font-weight: 500; }
-.summary .tags { margin-top: 24px; }
-@media (max-width: 820px) { .summary { grid-template-columns: 1fr; } }
-
-/* ---------- project explorer ---------- */
-.explorer { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 16px; align-items: start; }
-.tabs { display: grid; gap: 8px; position: sticky; top: 90px; }
-.tab { text-align: left; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; padding: 14px 16px; border-radius: 16px;
-  border: 1px solid var(--line); background: var(--panel); cursor: pointer; transition: border-color .2s, background .2s, transform .2s; }
-.tab:hover { border-color: var(--line-2); transform: translateX(2px); }
-.tab[aria-selected="true"] { border-color: rgba(255,122,61,.55); background: linear-gradient(90deg, var(--ember-soft), var(--panel)); }
-.tab .idx { grid-row: span 2; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-family: var(--mono); font-size: 12px;
-  border: 1px solid var(--line-2); color: var(--muted); }
-.tab[aria-selected="true"] .idx { background: var(--ember); border-color: var(--ember); color: #170A02; }
-.tab b { font-family: var(--display); font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
-.tab span { font-size: 12px; color: var(--muted); font-family: var(--mono); }
-.tabs .hint { font-size: 12px; color: var(--muted); padding: 6px 4px; display: flex; gap: 6px; align-items: center; }
-.panel { border: 1px solid var(--line); border-radius: 24px; background: var(--panel); overflow: hidden; min-width: 0; }
-.panel[hidden] { display: none; }
-.panel.enter { animation: panelIn .45s cubic-bezier(.2,.8,.2,1); }
-@keyframes panelIn { from { transform: translateY(10px); filter: blur(4px); } to { transform: none; filter: none; } }
-.window-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: rgba(19,26,36,.6); }
-.window-bar i { width: 11px; height: 11px; border-radius: 50%; background: var(--line-2); }
-.window-bar i:nth-child(1) { background: #FF5F57; } .window-bar i:nth-child(2) { background: #FEBC2E; } .window-bar i:nth-child(3) { background: #28C840; }
-.window-bar code { margin-left: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.shot { display: block; position: relative; perspective: 1200px; }
-.shot a { display: block; position: relative; overflow: hidden; }
-.shot img { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; background: var(--ink); transition: transform .6s cubic-bezier(.2,.8,.2,1); }
-.shot img.figure { object-fit: contain; background: #fff; padding: 10px; }
-.shot a:hover img { transform: scale(1.03); }
-.shot .open { position: absolute; right: 14px; top: 14px; z-index: 2; opacity: 0; transform: translateY(-4px); transition: .25s; pointer-events: none; }
-.shot a:hover .open { opacity: 1; transform: none; }
-.pbody { padding: clamp(20px, 3vw, 32px); display: grid; gap: 22px; }
-.pbody .kind { color: var(--ember); }
-.pbody h3 { font-size: clamp(30px, 3.6vw, 46px); margin-top: 8px; }
+/* collection */
+.collection { display: grid; grid-template-columns: minmax(230px, 300px) minmax(0, 1fr); gap: 18px; align-items: start; }
+.loadout { display: grid; gap: 8px; }
+.ltab { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 12px 8px 8px; width: 100%; text-align: left;
+  background: var(--panel); border: 1px solid var(--line); border-left: 3px solid transparent; cursor: pointer; transition: background .2s, border-color .2s; }
+.ltab:hover { background: var(--panel-2); }
+.ltab[aria-selected="true"] { background: var(--panel-2); border-color: #3A4459; border-left-color: var(--gold); }
+.ltab .th { width: 64px; height: 40px; overflow: hidden; background: #1A2232; display: grid; place-items: center; }
+.ltab .th img { width: 100%; height: 100%; object-fit: cover; }
+.ltab .th.gen { font: 800 15px/1 var(--display); color: var(--gold-hi); background: linear-gradient(135deg, #2A3650, #121A2A); }
+.ltab b { display: block; font-family: var(--ui); font-weight: 700; font-size: 18px; letter-spacing: .04em; text-transform: uppercase; line-height: 1.1; }
+.ltab span { display: block; font: 400 12px/1.3 var(--mono); color: var(--muted); }
+.panel { background: var(--panel); border: 1px solid var(--line); min-width: 0; }
+.shot { position: relative; display: block; background: #0D1320; border-bottom: 1px solid var(--line); aspect-ratio: 2 / 1; overflow: hidden; }
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot img.figure { object-fit: contain; background: #fff; }
+.shot .open { position: absolute; right: 12px; bottom: 12px; padding: 7px 12px; background: rgba(9,11,17,.85); border: 1px solid var(--line); font: 600 13px/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; }
+.shot.gen { display: grid; place-content: center; gap: 18px; padding: 24px; text-decoration: none;
+  background: radial-gradient(70% 80% at 75% 0%, rgba(212,176,106,.28), transparent 60%), linear-gradient(160deg, #1D2840, #0B1019); }
+.shot.gen .t { font-family: var(--display); font-weight: 900; font-size: clamp(40px, 6vw, 72px); line-height: .85; text-transform: uppercase; }
+.shot.gen .t span { color: var(--gold-hi); }
+.mini { border-collapse: collapse; font: 500 13px/1.3 var(--mono); }
+.mini th, .mini td { padding: 6px 12px 6px 0; text-align: left; border-bottom: 1px solid rgba(255,255,255,.08); }
+.mini th { color: var(--muted); font-weight: 400; }
+.mini td:last-child { color: var(--gold-hi); }
+.pbody { padding: 22px; display: grid; gap: 18px; }
+.pbody .kind { font: 500 12px/1.3 var(--mono); color: var(--gold); letter-spacing: .04em; text-transform: uppercase; }
+.pbody h3 { font-family: var(--display); font-weight: 900; font-size: clamp(36px, 4vw, 52px); line-height: .9; text-transform: uppercase; margin-top: 6px; }
 .pbody h3 a { text-decoration: none; }
-.pbody h3 a:hover { text-decoration: underline; text-decoration-color: var(--ember); text-underline-offset: 6px; }
-.pbody p { color: var(--muted); margin: 10px 0 0; max-width: 70ch; }
-.metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
-.metric { background: var(--ink); padding: 16px; min-width: 0; }
-.metric b { display: block; font-family: var(--display); font-size: clamp(24px, 2.6vw, 32px); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-.metric span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
-.actions { display: flex; flex-wrap: wrap; gap: 10px; }
-@media (max-width: 900px) {
-  .explorer { grid-template-columns: 1fr; }
-  .tabs { position: static; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
-  .tab { scroll-snap-align: start; }
-  .tabs .hint { display: none; }
+.pbody h3 a:hover { color: var(--gold-hi); }
+.pbody p { color: #C6CBD5; max-width: 68ch; margin-top: 10px; }
+.metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.metric { background: #0E1420; padding: 14px; display: grid; gap: 4px; }
+.metric b { font-family: var(--display); font-weight: 800; font-size: 32px; line-height: .9; color: var(--gold-hi); font-variant-numeric: tabular-nums; }
+.metric span { font-size: 14px; color: var(--muted); line-height: 1.3; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 500 12px/1 var(--mono); padding: 6px 9px; border: 1px solid var(--line); color: #C6CBD5; background: #0E1420; }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border: 1px solid #4A5670; background: transparent; cursor: pointer; text-decoration: none;
+  font-family: var(--ui); font-weight: 700; font-size: 15px; letter-spacing: .12em; text-transform: uppercase; transition: background .2s, border-color .2s, color .2s; }
+.btn:hover { border-color: var(--gold); color: var(--gold-hi); }
+.btn.primary { background: var(--gold); border-color: var(--gold); color: var(--void); }
+.btn.primary:hover { background: var(--gold-hi); color: var(--void); }
+.btn svg { width: 16px; height: 16px; }
+
+/* career: match history */
+.history { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.match { display: grid; grid-template-columns: 6px minmax(0, 1fr) auto; gap: 18px; align-items: center; background: var(--panel); border: 1px solid var(--line); padding: 0 18px 0 0; min-height: 84px; }
+.match::before { content: ""; align-self: stretch; background: var(--gold); }
+.match:nth-child(2)::before { background: #B8975A; }
+.match:nth-child(3)::before { background: #8E7748; }
+.match h3 { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: .95; text-transform: uppercase; }
+.match .what { font-family: var(--ui); font-size: 15px; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; }
+.match .side { text-align: right; display: grid; gap: 2px; }
+.match .when { font: 500 14px/1.2 var(--mono); }
+.match .dur { font: 400 12px/1.2 var(--mono); color: var(--gold); }
+
+/* arsenal */
+.arsenal { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.weapon { background: var(--panel); border: 1px solid var(--line); padding: 16px; display: grid; gap: 14px; align-content: start; min-width: 0; transition: border-color .2s; }
+.weapon:hover { border-color: var(--gold); }
+.weapon h3 { display: flex; justify-content: space-between; gap: 8px; font-family: var(--ui); font-weight: 700; font-size: 17px; letter-spacing: .1em; text-transform: uppercase; }
+.weapon h3 span { font: 400 12px/1.6 var(--mono); color: var(--muted); letter-spacing: 0; }
+
+/* records */
+.records { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+.records h3.col { font-family: var(--ui); font-weight: 700; font-size: 16px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.entry { background: var(--panel); border: 1px solid var(--line); padding: 18px; display: grid; gap: 6px; }
+.entry + .entry { margin-top: 10px; }
+.entry .venue { font: 500 12px/1.3 var(--mono); color: var(--gold); letter-spacing: .06em; }
+.entry h4 { margin: 0; font-family: var(--body); font-weight: 600; font-size: 18px; line-height: 1.3; }
+.entry p { color: var(--muted); font-size: 15px; }
+.entry a { color: var(--gold-hi); }
+
+/* contact */
+.contact { text-align: center; padding-bottom: 96px; }
+.contact h2 { font-family: var(--display); font-weight: 900; font-size: clamp(48px, 8vw, 112px); line-height: .86; text-transform: uppercase; }
+.contact h2 span { color: var(--gold-hi); }
+.contact .label { color: var(--gold); display: block; margin-bottom: 16px; }
+.contact .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 30px; }
+.email { font: 500 clamp(16px, 2vw, 20px)/1 var(--mono); padding: 12px 16px; border: 1px dashed #4A5670; user-select: all; }
+
+footer { border-top: 1px solid var(--line); padding: 20px var(--gutter) calc(20px + env(safe-area-inset-bottom, 0px)); }
+footer .in { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font: 400 13px/1.4 var(--mono); color: var(--muted); }
+
+/* ---------- match found overlay ---------- */
+.overlay { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px 16px; background: rgba(5,7,11,.88); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.mf { width: min(560px, 100%); text-align: center; display: grid; gap: 18px; justify-items: center; }
+.mf .label { color: var(--muted); }
+.mf .timer { font: 500 15px/1 var(--mono); color: var(--muted); }
+.mf h2 { font-family: var(--display); font-weight: 900; font-size: clamp(54px, 11vw, 96px); line-height: .85; text-transform: uppercase; color: var(--gold-hi); }
+.mf .searching { font-family: var(--display); font-weight: 900; font-size: clamp(40px, 8vw, 64px); line-height: .9; text-transform: uppercase; }
+.radar { width: 120px; height: 120px; position: relative; }
+.radar i { position: absolute; inset: 0; border: 1.5px solid var(--gold); transform: rotate(45deg); animation: pulse 1.6s ease-out infinite; opacity: 0; }
+.radar i:nth-child(2) { animation-delay: .53s; } .radar i:nth-child(3) { animation-delay: 1.06s; }
+@keyframes pulse { 0% { transform: rotate(45deg) scale(.2); opacity: 1; } 100% { transform: rotate(45deg) scale(1); opacity: 0; } }
+.mf .card { width: 100%; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; text-align: left; align-items: center; background: var(--panel); border: 1px solid var(--gold); padding: 14px; }
+.mf .card img { width: 96px; height: 96px; object-fit: cover; }
+.mf .card b { display: block; font-family: var(--ui); font-weight: 700; font-size: 24px; letter-spacing: .04em; color: var(--gold-hi); }
+.mf .card span { display: block; color: #C6CBD5; font-size: 15px; }
+.mf .card .ready { justify-self: start; margin-top: 8px; padding: 0 10px; height: 24px; font-size: 12px; }
+.mf .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.mf .close { background: none; border: 0; color: var(--muted); cursor: pointer; font: 600 13px/1 var(--ui); letter-spacing: .14em; text-transform: uppercase; padding: 8px; }
+.mf .close:hover { color: var(--text); }
+
+/* palette */
+.palette { position: fixed; inset: 0; z-index: 70; display: grid; place-items: start center; padding: 12vh 16px 16px; background: rgba(5,7,11,.7); }
+.palette .box { width: min(560px, 100%); background: #0F1522; border: 1px solid var(--gold); box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+.palette input { width: 100%; padding: 16px 18px; background: transparent; border: 0; border-bottom: 1px solid var(--line); color: var(--text); font: 500 17px/1.2 var(--body); outline: none; }
+.palette ul { list-style: none; margin: 0; padding: 6px; max-height: 50vh; overflow-y: auto; }
+.palette li { display: flex; justify-content: space-between; gap: 12px; padding: 11px 12px; cursor: pointer; font-size: 15px; }
+.palette li span { font: 400 12px/1.6 var(--mono); color: var(--muted); }
+.palette li[aria-selected="true"] { background: var(--panel-2); box-shadow: inset 3px 0 0 var(--gold); }
+.palette .foot { display: flex; gap: 16px; padding: 10px 16px; border-top: 1px solid var(--line); font: 400 12px/1 var(--mono); color: var(--muted); }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 80; padding: 12px 18px; background: var(--gold); color: var(--void); font: 700 14px/1 var(--ui); letter-spacing: .12em; text-transform: uppercase; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1240px) {
+  .wallet .w2 { display: none; }
+  .tabs a .t { display: none; }
+  .tabs a { padding: 0 16px; }
 }
-@media (max-width: 440px) { .metric { padding: 12px; } .metric span { font-size: 11px; } }
-
-/* ---------- experience ---------- */
-.timeline { list-style: none; margin: 0; padding: 0 0 0 28px; position: relative; display: grid; gap: 14px; }
-.timeline::before { content: ""; position: absolute; left: 8px; top: 10px; bottom: 10px; width: 2px; background: linear-gradient(var(--ember), var(--line) 80%); border-radius: 2px; }
-.role { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 24px; align-items: center; padding: 22px 24px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); transition: border-color .25s; }
-.role:hover { border-color: var(--line-2); }
-.role::before { content: ""; position: absolute; left: -27px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--ink); border: 2px solid var(--ember); }
-.role h3 { font-size: clamp(22px, 2.6vw, 30px); font-weight: 600; }
-.role .what { color: var(--muted); font-size: 15px; }
-.role .side { text-align: right; display: grid; gap: 4px; }
-.role .when { font-family: var(--mono); font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; }
-.role .dur { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-@media (max-width: 600px) { .role { grid-template-columns: 1fr; } .role .side { text-align: left; } }
-
-/* ---------- toolkit ---------- */
-.stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
-.group { border: 1px solid var(--line); border-radius: var(--r); padding: 22px; background: var(--panel); min-width: 0; }
-.group h3 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-.group h3 i { width: 8px; height: 8px; border-radius: 2px; background: var(--ember); transform: rotate(45deg); }
-.group .tags { margin-top: 16px; }
-.group .chip { transition: color .2s, border-color .2s; }
-.group .chip:hover { color: var(--text); border-color: var(--line-2); }
-
-/* ---------- publications + education ---------- */
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 56px); }
-@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
-.col h2 { font-size: clamp(30px, 3.8vw, 44px); margin-bottom: 22px; }
-.entry { padding: 22px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); margin-bottom: 12px; }
-.entry .venue { font-family: var(--mono); font-size: 12px; color: var(--ember); letter-spacing: .06em; }
-.entry h3 { font-size: 19px; font-weight: 600; margin-top: 8px; line-height: 1.3; letter-spacing: -.01em; }
-.entry p { color: var(--muted); margin: 6px 0 0; font-size: 15px; }
-.entry a { color: var(--text); text-underline-offset: 4px; text-decoration-color: var(--muted); }
-
-/* ---------- contact ---------- */
-.contact { border-top: 1px solid var(--line); position: relative; overflow: hidden; }
-.contact::before { content: ""; position: absolute; left: 50%; bottom: -60%; width: 1100px; height: 700px; translate: -50% 0; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(255,122,61,.16), transparent 70%); }
-.contact .wrap { position: relative; }
-.contact .big { font-size: clamp(44px, 8.5vw, 120px); line-height: .93; max-width: 13ch; margin-top: 16px; }
-.contact-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; align-items: center; }
-.email { font-family: var(--mono); font-size: clamp(15px, 2vw, 18px); padding: 12px 16px; border: 1px solid var(--line-2); border-radius: 14px; background: var(--panel); user-select: all; overflow-wrap: anywhere; }
-footer { padding-block: 26px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; }
-
-/* ---------- command palette ---------- */
-.palette { position: fixed; inset: 0; z-index: 80; display: grid; place-items: start center; padding: 12vh 16px 16px; background: rgba(4,6,9,.6);
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-.palette .box { width: 100%; max-width: 600px; border: 1px solid var(--line-2); border-radius: 18px; background: var(--panel); overflow: hidden;
-  box-shadow: 0 40px 120px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(255,122,61,.08); animation: pop .22s cubic-bezier(.2,.8,.2,1); }
-@keyframes pop { from { transform: translateY(-8px) scale(.98); } to { transform: none; } }
-.palette .search { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
-.palette input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: var(--text); font: 16px var(--body); }
-.palette ul { list-style: none; margin: 0; padding: 8px; max-height: 52vh; overflow: auto; }
-.palette li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; cursor: pointer; color: var(--muted); font-size: 14px; }
-.palette li .g { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: auto; text-transform: uppercase; letter-spacing: .08em; }
-.palette li[aria-selected="true"] { background: var(--panel-2); color: var(--text); }
-.palette li[aria-selected="true"] .ic { color: var(--ember); }
-.palette .ic { width: 18px; text-align: center; font-family: var(--mono); }
-.palette .empty { padding: 18px; color: var(--muted); font-size: 14px; }
-.palette .foot { display: flex; gap: 14px; padding: 10px 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); flex-wrap: wrap; }
-.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; z-index: 90; padding: 10px 16px; border-radius: 999px;
-  background: var(--panel-2); border: 1px solid var(--line-2); font-size: 13px; box-shadow: 0 20px 40px -10px rgba(0,0,0,.8); }
-
+@media (max-width: 1100px) {
+  .lobby { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding-right: var(--gutter); }
+  .center { grid-column: 1 / -1; order: -1; }
+  .rail { display: none; }
+  .chat { grid-column: 1 / -1; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s-a, .s-b, .s-c { grid-column: span 2; grid-row: auto; }
+  .s-d, .s-e { grid-column: span 1; }
+  .s-f { grid-column: span 2; }
+  .arsenal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .wallet { display: none; }
+  .mark { padding-right: 28px; }
+  .mark b { display: none; }
+  .collection { grid-template-columns: minmax(0, 1fr); }
+  .loadout { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .ltab { grid-template-columns: 1fr; }
+  .ltab .th { width: 100%; height: 56px; }
+  .records { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .lobby { grid-template-columns: minmax(0, 1fr); padding-top: 18px; }
+  .lineup { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 420px; row-gap: 14px; }
+  .slot.me { grid-column: 1 / -1; order: -1; width: min(250px, 72%); justify-self: center; margin-top: 16px; }
+  .slot:nth-child(n) { margin-top: 0; }
+  .slot.me { margin-top: 16px; }
+  .slot:not(.me) .frame { aspect-ratio: 1 / 1.25; }
+  .slot:not(.me) .pic { height: 48%; }
+  .slot:not(.me) .plus { display: none; }
+  .slot:not(.me) .txt span { display: none; }
+  .dailies { gap: 12px; }
+  .dailies .q { font-size: 12px; }
+  .stats { grid-template-columns: minmax(0, 1fr); }
+  .s-a, .s-b, .s-c, .s-d, .s-e, .s-f { grid-column: auto; }
+  .bar { grid-template-columns: 92px minmax(0, 1fr) 44px; }
+  .axis { margin-left: 102px; margin-right: 54px; }
+  .arsenal { grid-template-columns: minmax(0, 1fr); }
+  .metrics { grid-template-columns: minmax(0, 1fr); }
+  .match { grid-template-columns: 6px minmax(0, 1fr); padding-bottom: 12px; }
+  .match .side { grid-column: 2; text-align: left; }
+  .find { min-width: 0; width: 100%; }
+}
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
 }
 </style>
-
-<meta property="og:title" content="Enoch Nemili">
-<meta property="og:description" content="Software engineer building AI infrastructure: RAG and MCP servers, retrieval evals, and the data systems underneath.">
-<meta property="og:image" content="https://enoch-nemili.github.io/assets/papermind.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="assets/photo.jpg">
-<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<div class="grain" aria-hidden="true"></div>
-<div class="progress" id="progress" aria-hidden="true"></div>
 
-<header class="nav">
-  <div class="wrap">
-    <a class="brand" href="#top" aria-label="Enoch Nemili, back to top"><img src="assets/photo.jpg" alt="" width="30" height="30">Enoch Nemili</a>
-    <ul>
-      <li><a href="#numbers">Numbers</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#publications">Publications</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <button class="cmdk" type="button" id="open-palette" aria-haspopup="dialog"><span class="lbl">Jump to…</span><span class="kbd">⌘K</span></button>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-lobby" viewBox="0 0 24 24"><path d="M12 3l9 9-9 9-9-9z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8l4 4-4 4-4-4z" fill="currentColor"/></symbol>
+    <symbol id="i-stats" viewBox="0 0 24 24"><path d="M4 20V11M10 20V5M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-coll" viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 4h10" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-career" viewBox="0 0 24 24"><path d="M3 8h18v12H3zM9 8V5h6v3M3 13h18" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-arsenal" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-records" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10h8M8 14h8M8 18h5" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M14 3v5h5M9 13h7M9 17h7" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path d="M8 8h12v12H8z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 16V4h12" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-gh" viewBox="0 0 16 16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></symbol>
+    <symbol id="i-in" viewBox="0 0 16 16"><path fill="currentColor" d="M0 1.15C0 .52.52 0 1.17 0h13.66C15.48 0 16 .52 16 1.15v13.7c0 .63-.52 1.15-1.17 1.15H1.17C.52 16 0 15.48 0 14.85V1.15ZM4.94 13.4V6.17H2.54v7.23h2.4ZM3.74 5.18c.84 0 1.36-.55 1.36-1.25-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .7.52 1.25 1.33 1.25h.01Zm4.91 8.22V9.36c0-.21.02-.43.08-.58.17-.43.57-.88 1.23-.88.87 0 1.21.66 1.21 1.63v3.87h2.4V9.25c0-2.22-1.18-3.25-2.76-3.25-1.27 0-1.84.7-2.16 1.2v.02h-.02l.02-.02V6.17H6.26c.03.68 0 7.23 0 7.23h2.4Z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="bg" aria-hidden="true"><canvas id="veins"></canvas><span class="slash a"></span><span class="slash a thin"></span><span class="slash b"></span><span class="slash b thin"></span><canvas id="motes"></canvas></div>
+
+<header class="topbar">
+  <a class="mark" href="#lobby" aria-label="Enoch Nemili, back to the lobby"><span class="mono-badge">EN</span><b>LOBBY</b></a>
+  <ul class="tabs" aria-label="Sections">
+    <li><a href="#lobby" title="Lobby"><svg><use href="#i-lobby"/></svg><span class="t">Lobby</span></a></li>
+    <li><a href="#stats" title="Stats"><svg><use href="#i-stats"/></svg><span class="t">Stats</span></a></li>
+    <li><a href="#collection" title="Projects"><svg><use href="#i-coll"/></svg><span class="t">Projects</span></a></li>
+    <li><a href="#career" title="Career"><svg><use href="#i-career"/></svg><span class="t">Career</span></a></li>
+    <li><a href="#arsenal" title="Skills"><svg><use href="#i-arsenal"/></svg><span class="t">Arsenal</span></a></li>
+    <li><a href="#records" title="Publications and education"><svg><use href="#i-records"/></svg><span class="t">Records</span></a></li>
+    <li><a href="#contact" title="Contact"><svg><use href="#i-mail"/></svg><span class="t">Contact</span></a></li>
+  </ul>
+  <div class="wallet" aria-label="Quick facts">
+    <span title="Projects shipped"><i>P</i>5</span>
+    <span title="Years in industry"><i>Y</i>3+</span>
+    <span class="w2" title="Peer-reviewed papers"><i>R</i>2</span>
   </div>
+  <button class="gear" type="button" id="open-palette" aria-haspopup="dialog" aria-label="Jump to a section (Ctrl or Cmd + K)" title="Jump to… (⌘K)"><svg><use href="#i-gear"/></svg></button>
 </header>
 
-<main id="top">
-  <section class="hero" aria-labelledby="hero-title" style="padding-block:0">
-    <canvas id="flow" aria-hidden="true"></canvas>
-    <div class="aurora" aria-hidden="true"></div>
-    <div class="wrap">
-      <div>
-        <span class="status"><i></i>Open to full-time software engineering roles</span>
-        <h1 id="hero-title"><span class="w">I build</span> <span class="w" style="animation-delay:.07s">AI systems</span> <span class="w" style="animation-delay:.14s">that spend</span> <span class="w" style="animation-delay:.21s">compute only</span> <span class="w grad" style="animation-delay:.28s">where it counts.</span></h1>
-        <div class="role-line" aria-live="off">&gt; Enoch Nemili · <b id="role">AI infrastructure</b><span class="caret" aria-hidden="true"></span></div>
-        <p class="lede">Software engineer with <strong>3+ years in industry</strong>, now completing an <strong>MS in Computer Science at George Washington University</strong>. I design retrieval, inference and data systems, then measure whether they actually work.</p>
-        <div class="cta">
-          <a class="btn primary magnetic" href="#projects">See the work
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-          <a class="btn magnetic" href="https://github.com/Enoch-Nemili" target="_blank" rel="noopener">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
-          <a class="btn magnetic" href="https://www.linkedin.com/in/enoch-nemili/" target="_blank" rel="noopener">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M0 1.15C0 .52.52 0 1.17 0h13.66C15.48 0 16 .52 16 1.15v13.7c0 .63-.52 1.15-1.17 1.15H1.17C.52 16 0 15.48 0 14.85V1.15ZM4.94 13.4V6.17H2.54v7.23h2.4ZM3.74 5.18c.84 0 1.36-.55 1.36-1.25-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .7.52 1.25 1.33 1.25h.01Zm4.91 8.22V9.36c0-.21.02-.43.08-.58.17-.43.57-.88 1.23-.88.87 0 1.21.66 1.21 1.63v3.87h2.4V9.25c0-2.22-1.18-3.25-2.76-3.25-1.27 0-1.84.7-2.16 1.2v.02h-.02l.02-.02V6.17H6.26c.03.68 0 7.23 0 7.23h2.4Z"/></svg>LinkedIn</a>
+<main>
+  <section class="lobby" id="lobby" aria-label="Lobby">
+    <aside class="left">
+      <a class="pass" href="#collection" data-project="sb">
+        <span class="label">Featured release</span>
+        <h1>skillbench 1.0 <span class="arrow" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span></h1>
+        <span class="sub">Agent Skills that come with evidence. Released Oct 11, 2026.</span>
+        <span class="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></span>
+      </a>
+      <div class="mode">
+        <div class="art">
+          <span class="live"><i></i>Queue open</span>
+          <b><svg><use href="#i-target"/></svg>Open to work</b>
         </div>
-        <div class="readout" title="The animation behind this text: each dot is a request. Most take the cheap path; about 1% escalate to the expensive verifier.">
-          <span>requests <b id="r-total">0</b></span>
-          <span>cheap path <b id="r-cheap">0</b></span>
-          <span class="hot">escalated <b id="r-hot">0</b> (<b id="r-pct">0.0</b>%)</span>
-        </div>
+        <div class="act static"><span>Full-time SWE roles</span><span class="switch" aria-label="On" role="img"></span></div>
+        <a class="act" href="resume.pdf" target="_blank" rel="noopener"><span>View resume</span><svg><use href="#i-doc"/></svg></a>
+        <button class="act" type="button" data-copy-email><span>Copy email</span><svg><use href="#i-copy"/></svg></button>
+        <a class="act" href="https://www.linkedin.com/in/enoch-nemili/" target="_blank" rel="noopener"><span>LinkedIn</span><svg><use href="#i-in"/></svg></a>
       </div>
-      <div class="card-3d">
-        <div class="photo" id="photo">
-          <div class="photo-inner">
-            <img src="assets/photo.jpg" alt="Enoch Nemili outside the Science and Engineering Hall at George Washington University" width="460" height="460">
-            <div class="cap"><b>Enoch Nemili</b><span>Washington, DC · GWU</span></div>
-          </div>
-          <div class="float f1"><b>3+ yrs</b>industry experience</div>
-          <div class="float f2"><b>0.841</b>MRR, PaperMind</div>
-          <div class="float f3"><b>4</b>projects shipped</div>
-        </div>
+    </aside>
+
+    <div class="center">
+      <div class="dailies">
+        <div class="q">Industry<span><b>3+ yrs</b> · 3 companies</span></div>
+        <div class="dia" title="Projects shipped"><b>5</b></div>
+        <div class="q" style="text-align:left">Shipped<span><b>5</b> projects</span></div>
+        <span class="sep" aria-hidden="true"></span>
+        <div class="q">Next mission<span><b>ServeLab</b> · LLM serving</span></div>
       </div>
+
+      <div class="lineup" aria-label="Party: Enoch and four projects">
+        <button class="slot" type="button" data-project="se" aria-label="Open SentryEye">
+          <span class="frame"><span class="in"><span class="cap"></span>
+            <span class="pic"><img src="assets/sentryeye.png" alt="" width="1280" height="640"></span>
+            <span class="txt"><b>SentryEye</b><span>Vision · LLM cascade</span><span class="ver">v1.0.0</span></span>
+            <span class="plus"><svg><use href="#i-plus"/></svg></span></span></span>
+        </button>
+        <button class="slot" type="button" data-project="pm" aria-label="Open PaperMind">
+          <span class="frame"><span class="in"><span class="cap"></span>
+            <span class="pic"><img src="assets/papermind.png" alt="" width="1280" height="640"></span>
+            <span class="txt"><b>PaperMind</b><span>MCP · RAG · evals</span><span class="ver">v1.0.1</span></span>
+            <span class="plus"><svg><use href="#i-plus"/></svg></span></span></span>
+        </button>
+        <div class="slot me" role="group" aria-label="Enoch Nemili, software engineer, ready">
+          <span class="lvl">3+ YRS</span>
+          <div class="frame"><div class="in">
+            <span class="photo"><span class="sig" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+              <img src="assets/photo.jpg" alt="Enoch Nemili outside the Science and Engineering Hall at George Washington University" width="460" height="460"></span>
+            <span class="ready">READY</span>
+            <span class="who"><b>Enoch Nemili</b><span>Software Engineer · DC</span></span>
+            <span class="chev" aria-hidden="true"><i></i><i></i></span>
+          </div></div>
+        </div>
+        <button class="slot" type="button" data-project="rs" aria-label="Open E-Commerce RecSys">
+          <span class="frame"><span class="in"><span class="cap"></span>
+            <span class="pic"><img src="assets/recsys.png" alt="" width="1280" height="640"></span>
+            <span class="txt"><b>RecSys</b><span>Spark · Java · Kafka</span><span class="ver">v1.0.0</span></span>
+            <span class="plus"><svg><use href="#i-plus"/></svg></span></span></span>
+        </button>
+        <button class="slot" type="button" data-project="ca" aria-label="Open CodeAgent">
+          <span class="frame"><span class="in"><span class="cap"></span>
+            <span class="pic"><img src="assets/codeagent.png" alt="" width="1280" height="640"></span>
+            <span class="txt"><b>CodeAgent</b><span>Multi-agent review</span><span class="ver">v0.1.0</span></span>
+            <span class="plus"><svg><use href="#i-plus"/></svg></span></span></span>
+        </button>
+      </div>
+
+      <div class="find-wrap">
+        <button class="find" type="button" id="find">Find match</button>
+        <small>Hiring? Queue up with Enoch</small>
+      </div>
+    </div>
+
+    <aside class="right" aria-label="News">
+      <a class="news feat" href="https://github.com/Enoch-Nemili/skillbench" target="_blank" rel="noopener">
+        <div class="visual" aria-hidden="true">
+          <div class="score"><s>0/6</s><em>→</em><b>6/6</b></div>
+          <div class="cap2">debugging tasks fully passed<br>without → with the skill</div>
+        </div>
+        <div class="head"><span class="k">FEATURED · SKILLBENCH v1.0.0</span>
+          <h3>Skills, measured</h3>
+          <p>Four Agent Skills and the harness that tests them. With repro-before-fix loaded, every answer wrote a test that fails on the bug.</p></div>
+      </a>
+      <a class="news mission" href="#contact">
+        <div class="head"><span class="k">NEXT MISSION · IN PROGRESS</span>
+          <h3>ServeLab</h3>
+          <p>An LLM serving performance lab: throughput, latency and cost under real load.</p></div>
+      </a>
+      <a class="news" href="#records">
+        <div class="head"><span class="k">NEW PAPER · ACSOS 2026</span>
+          <h3>Semantic resource elasticity</h3>
+          <p>Co-author of a vision paper on adapting edge computation to what a scene actually needs.</p></div>
+      </a>
+      <a class="news notes" href="#collection" data-project="sb">
+        <div class="head"><h3>Patch notes</h3><span class="k">2026.10 · skillbench v1.0.0 · new lobby</span></div>
+      </a>
+    </aside>
+
+    <nav class="rail" aria-label="Elsewhere">
+      <a class="av" href="#lobby" aria-label="Enoch Nemili, online"><img src="assets/photo.jpg" alt="" width="42" height="42"></a>
+      <hr>
+      <a href="https://github.com/Enoch-Nemili" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg><use href="#i-gh"/></svg></a>
+      <a href="https://www.linkedin.com/in/enoch-nemili/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg><use href="#i-in"/></svg></a>
+      <button type="button" data-copy-email aria-label="Copy email" title="Copy email"><svg><use href="#i-mail"/></svg></button>
+      <a href="resume.pdf" target="_blank" rel="noopener" aria-label="Resume" title="Resume"><svg><use href="#i-doc"/></svg></a>
+    </nav>
+
+    <div class="chat"><span class="label">Party:</span><span class="msg"><b>Enoch:</b> hi, I'm a software engineer in Washington, DC, doing my MS in CS at GWU. I build AI and backend systems and measure whether they work.</span></div>
+  </section>
+
+  <section class="sec" id="stats" aria-labelledby="stats-title">
+    <div class="sec-head">
+      <div><span class="label">Measured, not estimated</span><h2 id="stats-title">Career stats</h2></div>
+      <p>Every figure comes from a real run in one of my repositories: evals, benchmarks and load tests.</p>
+    </div>
+    <div class="stats">
+      <div class="stat s-a">
+        <div class="src">PAPERMIND · RETRIEVAL EVAL</div>
+        <div class="num">0.841</div>
+        <div class="lbl">Mean reciprocal rank on 36 labeled questions, after tuning hybrid search with a decision rule fixed before the run.</div>
+        <div class="bars" role="img" aria-label="MRR by search method: keyword only 0.728, equal-weight 0.826, semantic only 0.838, hybrid 0.841">
+          <div class="bar"><span>keyword only</span><span class="track"><i style="--w:72.8%"></i></span><b>0.728</b></div>
+          <div class="bar"><span>equal-weight</span><span class="track"><i style="--w:82.6%"></i></span><b>0.826</b></div>
+          <div class="bar"><span>semantic only</span><span class="track"><i style="--w:83.8%"></i></span><b>0.838</b></div>
+          <div class="bar best"><span>hybrid w=0.5</span><span class="track"><i style="--w:84.1%"></i></span><b>0.841</b></div>
+        </div>
+        <div class="axis" aria-hidden="true"><span>0</span><span>0.5</span><span>1.0</span></div>
+      </div>
+      <div class="stat s-b">
+        <div class="src">SKILLBENCH · OUTCOME EVALS</div>
+        <div class="pair"><s>0/6</s><em>→</em><b>6/6</b></div>
+        <div class="lbl">Debugging tasks fully passed without and with the repro-before-fix skill, graded by running the model's code.</div>
+      </div>
+      <div class="stat s-c">
+        <div class="src">RECSYS · LOAD TEST, ~90 REQ/S</div>
+        <div class="bars" role="img" aria-label="Recommendation API latency: p50 2 ms, p95 12 ms, p99 18 ms">
+          <div class="bar"><span>p50</span><span class="track"><i style="--w:10%"></i></span><b>2 ms</b></div>
+          <div class="bar best"><span>p95</span><span class="track"><i style="--w:60%"></i></span><b>12 ms</b></div>
+          <div class="bar"><span>p99</span><span class="track"><i style="--w:90%"></i></span><b>18 ms</b></div>
+        </div>
+        <div class="axis" aria-hidden="true"><span>0</span><span>10 ms</span><span>20 ms</span></div>
+        <div class="lbl">Recommendation API with 50 concurrent users, 0 failures.</div>
+      </div>
+      <div class="stat s-d"><div class="src">SENTRYEYE · COST</div><div class="num">~0.1<small>%</small></div><div class="lbl">of video frames reach the expensive vision-LLM.</div></div>
+      <div class="stat s-e"><div class="src">RECSYS · RANKER</div><div class="num">0.954</div><div class="lbl">AUC on a leakage-free time split.</div></div>
+      <div class="stat s-f"><div class="src">SKILLBENCH · ROUTING</div><div class="num">93<small>%</small></div><div class="lbl">right skill picked on a hard pre-registered set; a keyword baseline gets 37%.</div></div>
     </div>
   </section>
 
-  <div class="marquee" aria-label="Technologies I work with">
-    <div class="track">
-      <span>Python</span><span>Java</span><span>MCP</span><span>RAG</span><span>pgvector</span><span>PostgreSQL</span><span>LangGraph</span><span>PyTorch</span><span>Spark</span><span>Kafka</span><span>Redis</span><span>Elasticsearch</span><span>FAISS</span><span>ONNX</span><span>Spring Boot</span><span>FastAPI</span><span>Docker</span><span>GitHub Actions</span><span>Prometheus</span><span>Grafana</span>
-      <span aria-hidden="true">Python</span><span aria-hidden="true">Java</span><span aria-hidden="true">MCP</span><span aria-hidden="true">RAG</span><span aria-hidden="true">pgvector</span><span aria-hidden="true">PostgreSQL</span><span aria-hidden="true">LangGraph</span><span aria-hidden="true">PyTorch</span><span aria-hidden="true">Spark</span><span aria-hidden="true">Kafka</span><span aria-hidden="true">Redis</span><span aria-hidden="true">Elasticsearch</span><span aria-hidden="true">FAISS</span><span aria-hidden="true">ONNX</span><span aria-hidden="true">Spring Boot</span><span aria-hidden="true">FastAPI</span><span aria-hidden="true">Docker</span><span aria-hidden="true">GitHub Actions</span><span aria-hidden="true">Prometheus</span><span aria-hidden="true">Grafana</span>
+  <section class="sec" id="collection" aria-labelledby="coll-title">
+    <div class="sec-head">
+      <div><span class="label">Open source · loadout</span><h2 id="coll-title">Projects</h2></div>
+      <p>Pick a project. Every image, title and button opens the code on GitHub.</p>
     </div>
-  </div>
-
-  <section id="numbers" aria-labelledby="numbers-title">
-    <div class="wrap">
-      <div class="sec-head">
-        <div><span class="eyebrow">Measured, not estimated</span><h2 id="numbers-title">By the numbers</h2></div>
-        <p>Every figure comes from a real run in one of my repositories: evals, benchmarks and load tests.</p>
+    <div class="collection">
+      <div class="loadout" role="tablist" aria-label="Projects" aria-orientation="vertical">
+        <button class="ltab" role="tab" id="tab-sb" aria-controls="p-sb" aria-selected="true"><span class="th gen">SB</span><span><b>skillbench</b><span>skills · evals</span></span></button>
+        <button class="ltab" role="tab" id="tab-pm" aria-controls="p-pm" aria-selected="false" tabindex="-1"><span class="th"><img src="assets/papermind.png" alt="" width="64" height="40"></span><span><b>PaperMind</b><span>MCP · RAG</span></span></button>
+        <button class="ltab" role="tab" id="tab-se" aria-controls="p-se" aria-selected="false" tabindex="-1"><span class="th"><img src="assets/sentryeye.png" alt="" width="64" height="40"></span><span><b>SentryEye</b><span>vision-LLM</span></span></button>
+        <button class="ltab" role="tab" id="tab-rs" aria-controls="p-rs" aria-selected="false" tabindex="-1"><span class="th"><img src="assets/recsys.png" alt="" width="64" height="40"></span><span><b>RecSys</b><span>Spark · Java</span></span></button>
+        <button class="ltab" role="tab" id="tab-ca" aria-controls="p-ca" aria-selected="false" tabindex="-1"><span class="th"><img src="assets/codeagent.png" alt="" width="64" height="40"></span><span><b>CodeAgent</b><span>LangGraph</span></span></button>
       </div>
-      <div class="bento">
-        <div class="tile spot t-a">
-          <div class="src">PaperMind · retrieval eval</div>
+
+      <article class="panel" role="tabpanel" id="p-sb" aria-labelledby="tab-sb">
+        <a class="shot gen" href="https://github.com/Enoch-Nemili/skillbench" target="_blank" rel="noopener" aria-label="Open skillbench on GitHub">
+          <div class="t">Agent Skills that come<br>with <span>evidence</span></div>
+          <table class="mini" aria-label="Outcome eval results">
+            <tr><th>skill</th><th>without</th><th>with</th></tr>
+            <tr><td>repro-before-fix</td><td>0/6</td><td>6/6</td></tr>
+            <tr><td>release-polish</td><td>1/6</td><td>5/6</td></tr>
+          </table>
+          <span class="open">Open repo ↗</span>
+        </a>
+        <div class="pbody">
           <div>
-            <div class="num"><span data-count="0.841" data-dec="3">0.841</span></div>
-            <div class="lbl">Mean reciprocal rank on 36 labeled questions, after tuning hybrid search with a decision rule fixed before the run.</div>
+            <div class="kind">Agent Skills · LLM evals · v1.0.0</div>
+            <h3><a href="https://github.com/Enoch-Nemili/skillbench" target="_blank" rel="noopener">skillbench</a></h3>
+            <p>Four Agent Skills for AI-infrastructure work, plus the harness that checks them: a SKILL.md linter that agrees with the reference validator, trigger evals (does the agent load the right skill?) and outcome evals (does the work get better?). The same model answers each task with and without the skill, and graders run the code. Every result is pre-registered, and rejected changes are reported too.</p>
           </div>
-          <div class="bars" aria-label="MRR by search method">
-            <div class="bar"><span>keyword only</span><span class="fill"><i style="--w:72.8%"></i></span><b>0.728</b></div>
-            <div class="bar"><span>equal-weight</span><span class="fill"><i style="--w:82.6%"></i></span><b>0.826</b></div>
-            <div class="bar"><span>semantic only</span><span class="fill"><i style="--w:83.8%"></i></span><b>0.838</b></div>
-            <div class="bar best"><span>hybrid w=0.5</span><span class="fill"><i style="--w:84.1%"></i></span><b>0.841</b></div>
+          <div class="metrics">
+            <div class="metric"><b>0/6 → 6/6</b><span>debugging tasks fully passed with repro-before-fix</span></div>
+            <div class="metric"><b>93%</b><span>routing accuracy on a hard set (baseline 37%)</span></div>
+            <div class="metric"><b>162</b><span>tests in CI</span></div>
+          </div>
+          <div class="chips"><span class="chip">Python</span><span class="chip">Agent Skills</span><span class="chip">Gemini API</span><span class="chip">Ollama</span><span class="chip">pytest</span><span class="chip">GitHub Actions</span></div>
+          <div class="btns">
+            <a class="btn primary" href="https://github.com/Enoch-Nemili/skillbench" target="_blank" rel="noopener">View on GitHub ↗</a>
+            <a class="btn" href="https://github.com/Enoch-Nemili/skillbench/blob/main/evals/RESULTS.md" target="_blank" rel="noopener">Read the results ↗</a>
           </div>
         </div>
-        <div class="tile spot t-b">
-          <div class="src">SentryEye · cost</div>
-          <div><div class="num">~<span data-count="0.1" data-dec="1">0.1</span><small>%</small></div><div class="lbl">of video frames reach the expensive vision-LLM. The cheap cascade handles the rest.</div></div>
+      </article>
+
+      <article class="panel" role="tabpanel" id="p-pm" aria-labelledby="tab-pm" hidden>
+        <a class="shot" href="https://github.com/Enoch-Nemili/papermind" target="_blank" rel="noopener" aria-label="Open PaperMind on GitHub">
+          <img id="pm-img" src="assets/papermind.png" alt="PaperMind: MCP server for research-paper RAG" width="1280" height="640" loading="lazy"><span class="open">Open repo ↗</span></a>
+        <div class="pbody">
+          <div>
+            <div class="kind">MCP server · RAG · Evals · v1.0.1</div>
+            <h3><a href="https://github.com/Enoch-Nemili/papermind" target="_blank" rel="noopener">PaperMind</a></h3>
+            <p>An MCP server that gives Claude a searchable, citable library of research papers. Hybrid search fuses pgvector with Postgres full-text using Reciprocal Rank Fusion, tuned on a labeled 36-question eval. Bearer-token auth, a multi-stage Docker image, and two production bugs found and fixed through testing.</p>
+          </div>
+          <div class="metrics">
+            <div class="metric"><b>0.841</b><span>MRR on 36 labeled questions</span></div>
+            <div class="metric"><b>97%</b><span>recall@5</span></div>
+            <div class="metric"><b>59</b><span>tests in CI</span></div>
+          </div>
+          <div class="chips"><span class="chip">Python</span><span class="chip">MCP</span><span class="chip">pgvector</span><span class="chip">Postgres FTS</span><span class="chip">Docker</span><span class="chip">GitHub Actions</span></div>
+          <div class="btns">
+            <a class="btn primary" href="https://github.com/Enoch-Nemili/papermind" target="_blank" rel="noopener">View on GitHub ↗</a>
+            <button class="btn swap" type="button" data-target="pm-img" data-alt-src="assets/papermind-demo.gif" aria-pressed="false">▶ Play demo</button>
+          </div>
         </div>
-        <div class="tile spot t-c">
-          <div class="src">RecSys · load test</div>
-          <svg class="spark" viewBox="0 0 300 110" aria-label="Latency percentiles: p50 2 ms, p95 12 ms, p99 18 ms">
-            <defs><linearGradient id="lg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FF7A3D" stop-opacity=".35"/><stop offset="1" stop-color="#FF7A3D" stop-opacity="0"/></linearGradient></defs>
-            <line x1="0" y1="98" x2="300" y2="98" stroke="#1C2431"/>
-            <path d="M10 92 L150 46 L290 18 L290 98 L10 98 Z" fill="url(#lg)"/>
-            <path d="M10 92 L150 46 L290 18" fill="none" stroke="#FF7A3D" stroke-width="2.2"/>
-            <circle cx="10" cy="92" r="4" fill="#6F8FC4"/><circle cx="150" cy="46" r="5" fill="#FF7A3D"/><circle cx="290" cy="18" r="4" fill="#6F8FC4"/>
-            <text x="14" y="82" fill="#8A94A6" font-size="11" font-family="Geist Mono, monospace">p50 2ms</text>
-            <text x="156" y="40" fill="#E8ECF2" font-size="11" font-family="Geist Mono, monospace">p95 12ms</text>
-            <text x="286" y="34" fill="#8A94A6" font-size="11" text-anchor="end" font-family="Geist Mono, monospace">p99 18ms</text>
-          </svg>
-          <div class="lbl">Recommendation API latency at ~90 req/s with 50 concurrent users, 0 failures.</div>
+      </article>
+
+      <article class="panel" role="tabpanel" id="p-se" aria-labelledby="tab-se" hidden>
+        <a class="shot" href="https://github.com/Enoch-Nemili/sentryeye" target="_blank" rel="noopener" aria-label="Open SentryEye on GitHub">
+          <img id="se-img" src="assets/sentryeye.png" alt="SentryEye: budget-aware traffic-incident detection" width="1280" height="640" loading="lazy"><span class="open">Open repo ↗</span></a>
+        <div class="pbody">
+          <div>
+            <div class="kind">Computer vision · Vision-LLM · v1.0.0</div>
+            <h3><a href="https://github.com/Enoch-Nemili/sentryeye" target="_blank" rel="noopener">SentryEye</a></h3>
+            <p>Traffic-incident detection from CCTV with a cheap-to-expensive cascade: YOLOv11 and ByteTrack watch every frame, motion signals flag anomalies, and a vision-LLM writes a typed incident report only when something looks wrong. Evaluated on the TAD benchmark of real accident footage.</p>
+          </div>
+          <div class="metrics">
+            <div class="metric"><b>~0.1%</b><span>of frames reach the vision-LLM</span></div>
+            <div class="metric"><b>81%</b><span>gate recall on 32 real videos</span></div>
+            <div class="metric"><b>0.98</b><span>verifier confidence on a real crash</span></div>
+          </div>
+          <div class="chips"><span class="chip">PyTorch</span><span class="chip">YOLOv11</span><span class="chip">ByteTrack</span><span class="chip">Gemini / Ollama</span><span class="chip">Pydantic</span></div>
+          <div class="btns">
+            <a class="btn primary" href="https://github.com/Enoch-Nemili/sentryeye" target="_blank" rel="noopener">View on GitHub ↗</a>
+            <button class="btn swap" type="button" data-target="se-img" data-alt-src="assets/sentryeye-gate.png" data-alt-class="figure" aria-pressed="false">Show results chart</button>
+          </div>
         </div>
-        <div class="tile spot t-d"><div class="src">PaperMind · CI</div><div><div class="num"><span data-count="59">59</span></div><div class="lbl">automated tests on every push</div></div></div>
-        <div class="tile spot t-e"><div class="src">RecSys · ranker</div><div><div class="num"><span data-count="0.954" data-dec="3">0.954</span></div><div class="lbl">AUC on a leakage-free time split</div></div></div>
-        <div class="tile spot t-f"><div class="src">Career</div><div><div class="num"><span data-count="3">3</span><small>+ yrs</small></div><div class="lbl">as a software engineer at 3 companies</div></div></div>
-      </div>
+      </article>
+
+      <article class="panel" role="tabpanel" id="p-rs" aria-labelledby="tab-rs" hidden>
+        <a class="shot" href="https://github.com/Enoch-Nemili/ecommerce-recsys" target="_blank" rel="noopener" aria-label="Open E-Commerce RecSys on GitHub">
+          <img src="assets/recsys.png" alt="E-Commerce RecSys: clickstream to a load-tested serving API" width="1280" height="640" loading="lazy"><span class="open">Open repo ↗</span></a>
+        <div class="pbody">
+          <div>
+            <div class="kind">Recommender · Data infrastructure · v1.0.0</div>
+            <h3><a href="https://github.com/Enoch-Nemili/ecommerce-recsys" target="_blank" rel="noopener">E-Commerce RecSys</a></h3>
+            <p>An end-to-end recommender on real clickstream data: Spark pipelines with a leakage-free time split, a LightGBM ranker exported to ONNX and served from Java/Spring Boot over Redis, Kafka streaming features, FAISS retrieval and Elasticsearch search, observed in Prometheus and Grafana.</p>
+          </div>
+          <div class="metrics">
+            <div class="metric"><b>0.954</b><span>ranker AUC</span></div>
+            <div class="metric"><b>12 ms</b><span>p95 latency on /recommend</span></div>
+            <div class="metric"><b>~90</b><span>req/s, 0 failures</span></div>
+          </div>
+          <div class="chips"><span class="chip">PySpark</span><span class="chip">LightGBM</span><span class="chip">ONNX</span><span class="chip">Java · Spring Boot</span><span class="chip">Redis</span><span class="chip">Kafka</span><span class="chip">Elasticsearch</span></div>
+          <div class="btns"><a class="btn primary" href="https://github.com/Enoch-Nemili/ecommerce-recsys" target="_blank" rel="noopener">View on GitHub ↗</a></div>
+        </div>
+      </article>
+
+      <article class="panel" role="tabpanel" id="p-ca" aria-labelledby="tab-ca" hidden>
+        <a class="shot" href="https://github.com/Enoch-Nemili/codeagent-ai" target="_blank" rel="noopener" aria-label="Open CodeAgent on GitHub">
+          <img src="assets/codeagent.png" alt="CodeAgent: multi-agent AI code review" width="1280" height="640" loading="lazy"><span class="open">Open repo ↗</span></a>
+        <div class="pbody">
+          <div>
+            <div class="kind">Multi-agent · LangGraph · v0.1.0</div>
+            <h3><a href="https://github.com/Enoch-Nemili/codeagent-ai" target="_blank" rel="noopener">CodeAgent</a></h3>
+            <p>Multi-agent code review for GitHub pull requests. Logic, style and security agents run in parallel on LangGraph, return schema-validated findings, and an orchestrator deduplicates them into one prioritized report that can be posted back to the PR.</p>
+          </div>
+          <div class="metrics">
+            <div class="metric"><b>3</b><span>specialist agents in parallel</span></div>
+            <div class="metric"><b>28</b><span>tests, plus mypy and ruff in CI</span></div>
+            <div class="metric"><b>Typed</b><span>Pydantic findings</span></div>
+          </div>
+          <div class="chips"><span class="chip">LangGraph</span><span class="chip">OpenAI</span><span class="chip">PyGithub</span><span class="chip">Pydantic</span><span class="chip">Click + Rich</span></div>
+          <div class="btns"><a class="btn primary" href="https://github.com/Enoch-Nemili/codeagent-ai" target="_blank" rel="noopener">View on GitHub ↗</a></div>
+        </div>
+      </article>
     </div>
   </section>
 
-  <section id="about" aria-labelledby="about-title" style="padding-top:0">
-    <div class="wrap summary">
+  <section class="sec" id="career" aria-labelledby="career-title">
+    <div class="sec-head">
+      <div><span class="label">Match history</span><h2 id="career-title">Career</h2></div>
+      <p>3+ years building software in industry before graduate school.</p>
+    </div>
+    <ol class="history">
+      <li class="match"><div><h3>Crusade Technologies</h3><div class="what">Software Engineer · India</div></div>
+        <div class="side"><span class="when">Sep 2024 – Aug 2025</span><span class="dur">1 yr</span></div></li>
+      <li class="match"><div><h3>Sanizer</h3><div class="what">Software Engineer · India</div></div>
+        <div class="side"><span class="when">Jan 2024 – Aug 2024</span><span class="dur">8 mos</span></div></li>
+      <li class="match"><div><h3>NTT Data</h3><div class="what">Software Engineer · India</div></div>
+        <div class="side"><span class="when">Feb 2022 – Dec 2023</span><span class="dur">1 yr 11 mos</span></div></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="arsenal" aria-labelledby="arsenal-title">
+    <div class="sec-head">
+      <div><span class="label">Toolkit</span><h2 id="arsenal-title">Arsenal</h2></div>
+      <p>Grouped by the problem each tool solves.</p>
+    </div>
+    <div class="arsenal">
+      <div class="weapon"><h3>AI &amp; retrieval <span>07</span></h3><div class="chips"><span class="chip">RAG</span><span class="chip">MCP</span><span class="chip">Agent Skills</span><span class="chip">LangGraph</span><span class="chip">pgvector</span><span class="chip">Hybrid search</span><span class="chip">LLM evals</span></div></div>
+      <div class="weapon"><h3>Backend &amp; data <span>09</span></h3><div class="chips"><span class="chip">Python</span><span class="chip">Java</span><span class="chip">FastAPI</span><span class="chip">Spring Boot</span><span class="chip">PostgreSQL</span><span class="chip">Redis</span><span class="chip">Kafka</span><span class="chip">Elasticsearch</span><span class="chip">Spark</span></div></div>
+      <div class="weapon"><h3>Machine learning <span>06</span></h3><div class="chips"><span class="chip">PyTorch</span><span class="chip">LightGBM</span><span class="chip">ONNX</span><span class="chip">FAISS</span><span class="chip">YOLO</span><span class="chip">scikit-learn</span></div></div>
+      <div class="weapon"><h3>Shipping <span>07</span></h3><div class="chips"><span class="chip">Docker</span><span class="chip">GitHub Actions</span><span class="chip">pytest</span><span class="chip">ruff · mypy</span><span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Locust</span></div></div>
+    </div>
+  </section>
+
+  <section class="sec" id="records" aria-labelledby="records-title">
+    <div class="sec-head">
+      <div><span class="label">Publications · education</span><h2 id="records-title">Records</h2></div>
+    </div>
+    <div class="records">
       <div>
-        <span class="eyebrow" style="color:var(--ember)">Professional summary</span>
-        <h2 id="about-title" style="margin-top:14px">Software engineer turning AI ideas into systems you can measure.</h2>
-      </div>
-      <div>
-        <p>I've spent <strong>3+ years as a software engineer</strong> at Crusade Technologies, Sanizer and NTT Data, and I'm now completing an <strong>MS in Computer Science at George Washington University</strong>.</p>
-        <p>My focus is the systems side of AI: retrieval-augmented generation, MCP servers that give assistants real tools, cost-aware inference, and the data pipelines and serving layers underneath. I ship with tests, evaluations and load tests, and I let the numbers decide, including when they show my first design was wrong.</p>
-        <div class="tags">
-          <span class="chip hot">AI infrastructure</span><span class="chip">RAG &amp; MCP</span><span class="chip">Backend</span><span class="chip">ML systems</span><span class="chip">Data pipelines</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="projects" aria-labelledby="projects-title" style="padding-top:0">
-    <div class="wrap">
-      <div class="sec-head">
-        <div><span class="eyebrow">Open source</span><h2 id="projects-title">Selected work</h2></div>
-        <p>Pick a project to explore it. Every image, title and button opens the code on GitHub.</p>
-      </div>
-      <div class="explorer">
-        <div class="tabs" role="tablist" aria-label="Projects">
-          <button class="tab" role="tab" id="tab-pm" aria-controls="p-pm" aria-selected="true"><span class="idx">PM</span><b>PaperMind</b><span>MCP · RAG · evals</span></button>
-          <button class="tab" role="tab" id="tab-se" aria-controls="p-se" aria-selected="false" tabindex="-1"><span class="idx">SE</span><b>SentryEye</b><span>vision · vision-LLM</span></button>
-          <button class="tab" role="tab" id="tab-rs" aria-controls="p-rs" aria-selected="false" tabindex="-1"><span class="idx">RS</span><b>E-Commerce RecSys</b><span>Spark · Java · Kafka</span></button>
-          <button class="tab" role="tab" id="tab-ca" aria-controls="p-ca" aria-selected="false" tabindex="-1"><span class="idx">CA</span><b>CodeAgent</b><span>multi-agent · LangGraph</span></button>
-          <div class="hint"><span class="kbd">↑</span><span class="kbd">↓</span> to switch</div>
-        </div>
-
-        <article class="panel" role="tabpanel" id="p-pm" aria-labelledby="tab-pm">
-          <div class="window-bar"><i></i><i></i><i></i><code>github.com/Enoch-Nemili/papermind</code></div>
-          <div class="shot"><a href="https://github.com/Enoch-Nemili/papermind" target="_blank" rel="noopener" aria-label="Open PaperMind on GitHub">
-            <img id="pm-img" src="assets/papermind.png" alt="PaperMind: MCP server for research-paper RAG" width="1280" height="640"><span class="btn open">Open repo ↗</span></a></div>
-          <div class="pbody">
-            <div>
-              <div class="eyebrow kind">MCP server · RAG · Evals · v1.0.0</div>
-              <h3><a href="https://github.com/Enoch-Nemili/papermind" target="_blank" rel="noopener">PaperMind</a></h3>
-              <p>An MCP server that gives Claude a searchable, citable library of research papers. Hybrid search fuses pgvector with Postgres full-text using Reciprocal Rank Fusion, tuned on a labeled 36-question eval. Bearer-token auth, a multi-stage Docker image, and two production bugs found and fixed through testing.</p>
-            </div>
-            <div class="metrics">
-              <div class="metric"><b>0.841</b><span>MRR on 36 labeled questions</span></div>
-              <div class="metric"><b>97%</b><span>recall@5</span></div>
-              <div class="metric"><b>59</b><span>tests in CI</span></div>
-            </div>
-            <div class="tags"><span class="chip">Python</span><span class="chip">MCP</span><span class="chip">pgvector</span><span class="chip">Postgres FTS</span><span class="chip">Docker</span><span class="chip">GitHub Actions</span></div>
-            <div class="actions">
-              <a class="btn primary" href="https://github.com/Enoch-Nemili/papermind" target="_blank" rel="noopener">View on GitHub ↗</a>
-              <button class="btn swap" type="button" data-target="pm-img" data-alt-src="assets/papermind-demo.gif" data-alt-label="Show card" aria-pressed="false">▶ Play demo</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="panel" role="tabpanel" id="p-se" aria-labelledby="tab-se" hidden>
-          <div class="window-bar"><i></i><i></i><i></i><code>github.com/Enoch-Nemili/sentryeye</code></div>
-          <div class="shot"><a href="https://github.com/Enoch-Nemili/sentryeye" target="_blank" rel="noopener" aria-label="Open SentryEye on GitHub">
-            <img id="se-img" src="assets/sentryeye.png" alt="SentryEye: budget-aware traffic-incident detection" width="1280" height="640" loading="lazy"><span class="btn open">Open repo ↗</span></a></div>
-          <div class="pbody">
-            <div>
-              <div class="eyebrow kind">Computer vision · Vision-LLM · v1.0.0</div>
-              <h3><a href="https://github.com/Enoch-Nemili/sentryeye" target="_blank" rel="noopener">SentryEye</a></h3>
-              <p>Traffic-incident detection from CCTV with a cheap-to-expensive cascade: YOLOv11 and ByteTrack watch every frame, motion signals flag anomalies, and a vision-LLM writes a typed incident report only when something looks wrong. Evaluated on the TAD benchmark of real accident footage.</p>
-            </div>
-            <div class="metrics">
-              <div class="metric"><b>~0.1%</b><span>of frames reach the vision-LLM</span></div>
-              <div class="metric"><b>81%</b><span>gate recall on 32 real videos</span></div>
-              <div class="metric"><b>0.98</b><span>verifier confidence on a real crash</span></div>
-            </div>
-            <div class="tags"><span class="chip">PyTorch</span><span class="chip">YOLOv11</span><span class="chip">ByteTrack</span><span class="chip">Gemini / Ollama</span><span class="chip">Pydantic</span></div>
-            <div class="actions">
-              <a class="btn primary" href="https://github.com/Enoch-Nemili/sentryeye" target="_blank" rel="noopener">View on GitHub ↗</a>
-              <button class="btn swap" type="button" data-target="se-img" data-alt-src="assets/sentryeye-gate.png" data-alt-class="figure" data-alt-label="Show card" aria-pressed="false">Show results chart</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="panel" role="tabpanel" id="p-rs" aria-labelledby="tab-rs" hidden>
-          <div class="window-bar"><i></i><i></i><i></i><code>github.com/Enoch-Nemili/ecommerce-recsys</code></div>
-          <div class="shot"><a href="https://github.com/Enoch-Nemili/ecommerce-recsys" target="_blank" rel="noopener" aria-label="Open E-Commerce RecSys on GitHub">
-            <img src="assets/recsys.png" alt="E-Commerce RecSys: clickstream to a load-tested serving API" width="1280" height="640" loading="lazy"><span class="btn open">Open repo ↗</span></a></div>
-          <div class="pbody">
-            <div>
-              <div class="eyebrow kind">Recommender · Data infrastructure · v1.0.0</div>
-              <h3><a href="https://github.com/Enoch-Nemili/ecommerce-recsys" target="_blank" rel="noopener">E-Commerce RecSys</a></h3>
-              <p>An end-to-end recommender on real clickstream data: Spark pipelines with a leakage-free time split, a LightGBM ranker exported to ONNX and served from Java/Spring Boot over Redis, Kafka streaming features, FAISS retrieval and Elasticsearch search, observed in Prometheus and Grafana.</p>
-            </div>
-            <div class="metrics">
-              <div class="metric"><b>0.954</b><span>ranker AUC</span></div>
-              <div class="metric"><b>12 ms</b><span>p95 latency on /recommend</span></div>
-              <div class="metric"><b>~90</b><span>req/s, 0 failures</span></div>
-            </div>
-            <div class="tags"><span class="chip">PySpark</span><span class="chip">LightGBM</span><span class="chip">ONNX</span><span class="chip">Java · Spring Boot</span><span class="chip">Redis</span><span class="chip">Kafka</span><span class="chip">Elasticsearch</span></div>
-            <div class="actions"><a class="btn primary" href="https://github.com/Enoch-Nemili/ecommerce-recsys" target="_blank" rel="noopener">View on GitHub ↗</a></div>
-          </div>
-        </article>
-
-        <article class="panel" role="tabpanel" id="p-ca" aria-labelledby="tab-ca" hidden>
-          <div class="window-bar"><i></i><i></i><i></i><code>github.com/Enoch-Nemili/codeagent-ai</code></div>
-          <div class="shot"><a href="https://github.com/Enoch-Nemili/codeagent-ai" target="_blank" rel="noopener" aria-label="Open CodeAgent on GitHub">
-            <img src="assets/codeagent.png" alt="CodeAgent: multi-agent AI code review" width="1280" height="640" loading="lazy"><span class="btn open">Open repo ↗</span></a></div>
-          <div class="pbody">
-            <div>
-              <div class="eyebrow kind">Multi-agent · LangGraph · v0.1.0</div>
-              <h3><a href="https://github.com/Enoch-Nemili/codeagent-ai" target="_blank" rel="noopener">CodeAgent</a></h3>
-              <p>Multi-agent code review for GitHub pull requests. Logic, style and security agents run in parallel on LangGraph, return schema-validated findings, and an orchestrator deduplicates them into one prioritized report that can be posted back to the PR.</p>
-            </div>
-            <div class="metrics">
-              <div class="metric"><b>3</b><span>specialist agents in parallel</span></div>
-              <div class="metric"><b>28</b><span>tests, plus mypy and ruff in CI</span></div>
-              <div class="metric"><b>Typed</b><span>Pydantic findings</span></div>
-            </div>
-            <div class="tags"><span class="chip">LangGraph</span><span class="chip">OpenAI</span><span class="chip">PyGithub</span><span class="chip">Pydantic</span><span class="chip">Click + Rich</span></div>
-            <div class="actions"><a class="btn primary" href="https://github.com/Enoch-Nemili/codeagent-ai" target="_blank" rel="noopener">View on GitHub ↗</a></div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="experience" aria-labelledby="exp-title" style="padding-top:0">
-    <div class="wrap">
-      <div class="sec-head">
-        <div><span class="eyebrow">Career</span><h2 id="exp-title">Experience</h2></div>
-        <p>3+ years building software in industry before graduate school.</p>
-      </div>
-      <ol class="timeline">
-        <li class="role spot"><div><h3>Crusade Technologies</h3><div class="what">Software Engineer · India</div></div>
-          <div class="side"><span class="when">Sep 2024 – Aug 2025</span><span class="dur">1 yr</span></div></li>
-        <li class="role spot"><div><h3>Sanizer</h3><div class="what">Software Engineer · India</div></div>
-          <div class="side"><span class="when">Jan 2024 – Aug 2024</span><span class="dur">8 mos</span></div></li>
-        <li class="role spot"><div><h3>NTT Data</h3><div class="what">Software Engineer · India</div></div>
-          <div class="side"><span class="when">Feb 2022 – Dec 2023</span><span class="dur">1 yr 11 mos</span></div></li>
-      </ol>
-    </div>
-  </section>
-
-  <section id="skills" aria-labelledby="skills-title" style="padding-top:0">
-    <div class="wrap">
-      <div class="sec-head"><div><span class="eyebrow">Toolkit</span><h2 id="skills-title">What I build with</h2></div><p>Grouped by the problem each tool solves.</p></div>
-      <div class="stack">
-        <div class="group spot"><h3><i></i>AI &amp; retrieval</h3><div class="tags"><span class="chip">RAG</span><span class="chip">MCP</span><span class="chip">LangGraph</span><span class="chip">pgvector</span><span class="chip">Hybrid search</span><span class="chip">Retrieval evals</span><span class="chip">Vision-LLMs</span></div></div>
-        <div class="group spot"><h3><i></i>Backend &amp; data</h3><div class="tags"><span class="chip">Python</span><span class="chip">Java</span><span class="chip">FastAPI</span><span class="chip">Spring Boot</span><span class="chip">PostgreSQL</span><span class="chip">Redis</span><span class="chip">Kafka</span><span class="chip">Elasticsearch</span><span class="chip">Spark</span></div></div>
-        <div class="group spot"><h3><i></i>Machine learning</h3><div class="tags"><span class="chip">PyTorch</span><span class="chip">LightGBM</span><span class="chip">ONNX</span><span class="chip">FAISS</span><span class="chip">YOLO</span><span class="chip">scikit-learn</span></div></div>
-        <div class="group spot"><h3><i></i>Shipping</h3><div class="tags"><span class="chip">Docker</span><span class="chip">GitHub Actions</span><span class="chip">pytest</span><span class="chip">ruff · mypy</span><span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Locust</span></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="publications" aria-labelledby="pub-title" style="padding-top:0">
-    <div class="wrap two">
-      <div class="col">
-        <h2 id="pub-title">Publications</h2>
-        <div class="entry spot"><div class="venue">ACSOS 2026 · MAIN TRACK</div>
-          <h3>A Vision for Semantic Resource Elasticity in Autonomic Cyber-Physical Edge Systems</h3>
+        <h3 class="col">Publications</h3>
+        <div class="entry"><div class="venue">ACSOS 2026 · MAIN TRACK</div>
+          <h4>A Vision for Semantic Resource Elasticity in Autonomic Cyber-Physical Edge Systems</h4>
           <p>Co-author. Vision paper on adapting edge computation to what a scene actually needs.</p></div>
-        <div class="entry spot"><div class="venue">IEEE ICCMC 2025</div>
-          <h3>Emotion and sentiment detection on Twitter data with generative AI</h3>
+        <div class="entry"><div class="venue">IEEE ICCMC 2025</div>
+          <h4>Emotion and sentiment detection on Twitter data with generative AI</h4>
           <p>Co-author. <a href="https://doi.org/10.1109/ICCMC65190.2025.11140600" target="_blank" rel="noopener">DOI 10.1109/ICCMC65190.2025.11140600</a></p></div>
       </div>
-      <div class="col">
-        <h2>Education</h2>
-        <div class="entry spot"><div class="venue">EXPECTED DEC 2027</div>
-          <h3>MS, Computer Science</h3>
+      <div>
+        <h3 class="col">Education</h3>
+        <div class="entry"><div class="venue">EXPECTED DEC 2027</div>
+          <h4>MS, Computer Science</h4>
           <p>George Washington University · Washington, DC</p></div>
-        <div class="entry spot"><div class="venue">2021 – 2025</div>
-          <h3>B.Tech, Information Technology</h3>
+        <div class="entry"><div class="venue">2021 – 2025</div>
+          <h4>B.Tech, Information Technology</h4>
           <p>Jawaharlal Nehru Technological University · Hyderabad · CGPA 8.14/10, First Class with Distinction</p></div>
       </div>
     </div>
   </section>
 
-  <section id="contact" class="contact" aria-labelledby="contact-title">
-    <div class="wrap">
-      <span class="eyebrow" style="color:var(--ember)">Contact</span>
-      <h2 id="contact-title" class="big">Let's build something <span class="grad">worth the compute.</span></h2>
-      <div class="contact-row">
-        <span class="email" id="email">enoch.das@gmail.com</span>
-        <button class="btn magnetic" type="button" id="copy">Copy email</button>
-        <a class="btn primary magnetic" href="https://www.linkedin.com/in/enoch-nemili/" target="_blank" rel="noopener">LinkedIn ↗</a>
-        <a class="btn magnetic" href="https://github.com/Enoch-Nemili" target="_blank" rel="noopener">GitHub ↗</a>
-        <a class="btn resume-btn" href="resume.pdf" target="_blank" rel="noopener">Resume</a>
-      </div>
+  <section class="sec contact" id="contact" aria-labelledby="contact-title">
+    <span class="label">Queue up</span>
+    <h2 id="contact-title">Let's build something <span>worth the compute.</span></h2>
+    <div class="row">
+      <span class="email" id="email">enoch.das@gmail.com</span>
+      <button class="btn" type="button" data-copy-email>Copy email</button>
+      <a class="btn primary" href="https://www.linkedin.com/in/enoch-nemili/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="btn" href="https://github.com/Enoch-Nemili" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn" href="resume.pdf" target="_blank" rel="noopener">Resume</a>
     </div>
   </section>
 </main>
 
-<footer>
-  <div class="wrap"><span>© 2026 Enoch Nemili</span><span>Press <span class="kbd">⌘K</span> to jump anywhere</span></div>
-</footer>
+<footer><div class="in"><span>© 2026 Enoch Nemili</span><span>Game-lobby theme with original artwork. Not affiliated with any game studio.</span></div></footer>
 
-<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Command palette" hidden>
+<div class="overlay" id="match" role="dialog" aria-modal="true" aria-labelledby="mf-title" hidden>
+  <div class="mf">
+    <div id="mf-search" class="mf" style="width:100%">
+      <div class="radar" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="searching" id="mf-title-search">Searching…</div>
+      <div class="timer" id="mf-timer">0:00</div>
+    </div>
+    <div id="mf-found" class="mf" style="width:100%" hidden>
+      <span class="label">Software engineer · full-time</span>
+      <h2 id="mf-title">Match found</h2>
+      <div class="card">
+        <img src="assets/photo.jpg" alt="" width="96" height="96">
+        <div><b>Enoch Nemili</b><span>AI infrastructure · RAG &amp; MCP · backend</span><span>Washington, DC · MS CS, GWU (Dec 2027)</span><span class="ready">READY</span></div>
+      </div>
+      <span class="email">enoch.das@gmail.com</span>
+      <div class="row">
+        <button class="btn primary" type="button" data-copy-email>Accept: copy email</button>
+        <a class="btn" href="https://www.linkedin.com/in/enoch-nemili/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn" href="resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </div>
+    </div>
+    <button class="close" type="button" id="mf-close">Leave queue (Esc)</button>
+  </div>
+</div>
+
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Jump to" hidden>
   <div class="box">
-    <div class="search"><span class="kbd">⌘K</span><input id="pal-input" type="text" placeholder="Jump to a section, open a repo, copy email…" autocomplete="off" aria-controls="pal-list"></div>
-    <ul id="pal-list" role="listbox"></ul>
-    <div class="foot"><span><span class="kbd">↑</span> <span class="kbd">↓</span> navigate</span><span><span class="kbd">↵</span> open</span><span><span class="kbd">esc</span> close</span></div>
+    <input id="pal-input" type="text" placeholder="Jump to a section, open a repo, copy email…" autocomplete="off" aria-controls="pal-list">
+    <ul id="pal-list" role="listbox" aria-label="Results"></ul>
+    <div class="foot"><span>↑ ↓ navigate</span><span>↵ open</span><span>esc close</span></div>
   </div>
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
-
 <script>
 (() => {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-
-  /* ---------- scroll progress + active nav ---------- */
-  const bar = $("#progress");
-  const links = $$(".nav ul a");
-  const onScroll = () => {
-    const h = document.documentElement.scrollHeight - innerHeight;
-    bar.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
-  };
-  addEventListener("scroll", onScroll, { passive: true }); onScroll();
-  const io = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id));
-  }), { rootMargin: "-45% 0px -50% 0px" });
-  ["numbers", "about", "projects", "experience", "publications", "contact"].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
-
-  /* ---------- hero: request stream with ~1% escalation ---------- */
-  const canvas = $("#flow"), ctx = canvas.getContext("2d"), hero = canvas.parentElement;
-  const out = { total: $("#r-total"), cheap: $("#r-cheap"), hot: $("#r-hot"), pct: $("#r-pct") };
-  let W = 0, H = 0, parts = [], running = true; const stats = { total: 0, cheap: 0, hot: 0 };
-  const ESCALATE = 0.012, fmt = n => n.toLocaleString("en-US");
-  function size() {
-    const dpr = Math.min(devicePixelRatio || 1, 2), r = hero.getBoundingClientRect();
-    W = r.width; H = r.height; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  const spawn = x => { const lane = Math.random(); return { x: x ?? -10, lane, y: 0, v: .6 + Math.random() * 1.1, phase: Math.random() * 6.28, hot: false, decided: false, trail: [] }; };
-  const init = () => { parts = []; const n = Math.round(Math.min(280, Math.max(90, W / 4.5))); for (let i = 0; i < n; i++) parts.push(spawn(Math.random() * W)); };
-  const gx = () => W * (W < 900 ? .5 : .56);
-  const vf = () => ({ x: W * (W < 900 ? .86 : .62), y: H * .16 });
-  function step(t) {
-    ctx.clearRect(0, 0, W, H);
-    const g0 = gx(), v = vf();
-    ctx.strokeStyle = "rgba(138,148,166,.10)"; ctx.setLineDash([3, 6]); ctx.beginPath(); ctx.moveTo(g0, H * .06); ctx.lineTo(g0, H * .96); ctx.stroke(); ctx.setLineDash([]);
-    const p0 = .5 + .5 * Math.sin(t / 600), rg = ctx.createRadialGradient(v.x, v.y, 0, v.x, v.y, 50);
-    rg.addColorStop(0, `rgba(255,122,61,${.32 + p0 * .25})`); rg.addColorStop(1, "rgba(255,122,61,0)");
-    ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(v.x, v.y, 50, 0, 6.283); ctx.fill();
-    ctx.fillStyle = "#FF7A3D"; ctx.beginPath(); ctx.arc(v.x, v.y, 4.5, 0, 6.283); ctx.fill();
-    for (let i = 0; i < parts.length; i++) {
-      const p = parts[i];
-      if (!p.hot) {
-        p.x += p.v; p.y = H * (.1 + p.lane * .84) + Math.sin(p.x / 90 + p.phase) * 10;
-        if (!p.decided && p.x > g0) { p.decided = true; stats.total++; if (Math.random() < ESCALATE) { p.hot = true; stats.hot++; } else stats.cheap++; }
-        ctx.fillStyle = p.decided ? "rgba(111,143,196,.30)" : "rgba(111,143,196,.62)"; ctx.fillRect(p.x, p.y, 2, 2);
-        if (p.x > W + 10) parts[i] = spawn();
-      } else {
-        p.trail.push([p.x, p.y]); if (p.trail.length > 26) p.trail.shift();
-        p.x += (v.x - p.x) * .035 + .4; p.y += (v.y - p.y) * .05;
-        ctx.strokeStyle = "rgba(255,122,61,.55)"; ctx.lineWidth = 1.6; ctx.beginPath(); p.trail.forEach(([x, y], k) => k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke(); ctx.lineWidth = 1;
-        ctx.fillStyle = "#FFB067"; ctx.beginPath(); ctx.arc(p.x, p.y, 2.6, 0, 6.283); ctx.fill();
-        if (Math.hypot(v.x - p.x, v.y - p.y) < 6) parts[i] = spawn();
-      }
-    }
-    if (t - (step.l || 0) > 250) { step.l = t; out.total.textContent = fmt(stats.total); out.cheap.textContent = fmt(stats.cheap); out.hot.textContent = fmt(stats.hot);
-      out.pct.textContent = stats.total ? (stats.hot / stats.total * 100).toFixed(1) : "0.0"; }
-  }
-  size(); init();
-  if (reduce) { for (let k = 0; k < 500; k++) step(k * 16); }
-  else {
-    const loop = t => { if (running) step(t); requestAnimationFrame(loop); }; requestAnimationFrame(loop);
-    new IntersectionObserver(([e]) => { running = e.isIntersecting && !document.hidden; }).observe(hero);
-    document.addEventListener("visibilitychange", () => { running = !document.hidden; });
-  }
-  let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { size(); init(); }, 150); });
-
-  /* ---------- rotating role line ---------- */
-  const roles = ["AI infrastructure", "RAG & MCP servers", "ML systems", "Backend & data pipelines", "Cost-aware inference"];
-  const roleEl = $("#role");
-  if (!reduce) {
-    let ri = 0, ci = roles[0].length, del = true;
-    const tick = () => {
-      const word = roles[ri];
-      if (del) { ci--; if (ci <= 0) { del = false; ri = (ri + 1) % roles.length; } }
-      else { ci++; if (ci >= roles[ri].length) { del = true; roleEl.textContent = roles[ri]; return setTimeout(tick, 1800); } }
-      roleEl.textContent = (del ? word : roles[ri]).slice(0, Math.max(ci, 0));
-      setTimeout(tick, del ? 35 : 65);
-    };
-    setTimeout(tick, 2400);
-  }
-
-  /* ---------- pointer effects: spotlight, magnetic buttons, photo tilt ---------- */
-  if (fine && !reduce) {
-    document.addEventListener("pointermove", e => {
-      const el = e.target.closest(".spot"); if (!el) return;
-      const r = el.getBoundingClientRect();
-      el.style.setProperty("--mx", `${e.clientX - r.left}px`); el.style.setProperty("--my", `${e.clientY - r.top}px`);
-    }, { passive: true });
-    $$(".magnetic").forEach(b => {
-      b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect();
-        b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .28}px)`; });
-      b.addEventListener("pointerleave", () => { b.style.transform = ""; });
-    });
-    const ph = $("#photo"), wrap = ph.parentElement;
-    wrap.addEventListener("pointermove", e => { const r = wrap.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-      ph.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`; });
-    wrap.addEventListener("pointerleave", () => { ph.style.transform = ""; });
-  }
-
-  /* ---------- count-up + bars when the bento comes into view (final values are in the HTML already) ---------- */
-  if (!reduce) {
-    const bento = $(".bento"); let done = false;
-    const fills = $$(".bar .fill i"); fills.forEach(f => { f.dataset.w = f.style.getPropertyValue("--w"); });
-    new IntersectionObserver(([e], obs) => {
-      if (!e.isIntersecting || done) return; done = true; obs.disconnect();
-      fills.forEach(f => { f.style.setProperty("--w", "0%"); requestAnimationFrame(() => requestAnimationFrame(() => f.style.setProperty("--w", f.dataset.w))); });
-      $$("[data-count]").forEach(el => {
-        const end = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), t0 = performance.now(), dur = 1300;
-        const f = now => { const k = Math.min(1, (now - t0) / dur), ease = 1 - Math.pow(1 - k, 3);
-          el.textContent = (end * ease).toFixed(dec); if (k < 1) requestAnimationFrame(f); else el.textContent = end.toFixed(dec); };
-        requestAnimationFrame(f);
-      });
-    }, { threshold: .25 }).observe(bento);
-  }
-
-  /* ---------- project explorer (tabs) ---------- */
-  const tabs = $$('[role="tab"]');
-  function select(tab, focus) {
-    tabs.forEach(t => { const on = t === tab; t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
-      const p = document.getElementById(t.getAttribute("aria-controls")); p.hidden = !on; if (on) { p.classList.remove("enter"); void p.offsetWidth; p.classList.add("enter"); } });
-    if (focus) tab.focus();
-    if (matchMedia("(max-width: 900px)").matches) tab.scrollIntoView({ block: "nearest", inline: "center", behavior: reduce ? "auto" : "smooth" });
-  }
-  tabs.forEach((t, i) => {
-    t.addEventListener("click", () => select(t));
-    t.addEventListener("keydown", e => {
-      const k = e.key; let n = null;
-      if (k === "ArrowDown" || k === "ArrowRight") n = tabs[(i + 1) % tabs.length];
-      if (k === "ArrowUp" || k === "ArrowLeft") n = tabs[(i - 1 + tabs.length) % tabs.length];
-      if (k === "Home") n = tabs[0]; if (k === "End") n = tabs[tabs.length - 1];
-      if (n) { e.preventDefault(); select(n, true); }
-    });
-  });
-
-  /* ---------- swap card <-> demo / results chart ---------- */
-  $$(".swap").forEach(btn => {
-    const img = document.getElementById(btn.dataset.target), orig = { src: img.getAttribute("src"), label: btn.textContent };
-    btn.addEventListener("click", () => {
-      const on = btn.getAttribute("aria-pressed") !== "true"; btn.setAttribute("aria-pressed", String(on));
-      img.src = on ? btn.dataset.altSrc : orig.src; if (btn.dataset.altClass) img.classList.toggle(btn.dataset.altClass, on);
-      btn.textContent = on ? btn.dataset.altLabel : orig.label;
-    });
-  });
+  const EMAIL = "enoch.das@gmail.com";
 
   /* ---------- toast + copy email ---------- */
   const toast = $("#toast"); let tt;
   const say = msg => { toast.textContent = msg; toast.hidden = false; clearTimeout(tt); tt = setTimeout(() => { toast.hidden = true; }, 2200); };
-  const email = $("#email").textContent.trim();
-  async function copyEmail() {
-    try { await navigator.clipboard.writeText(email); say("Email copied"); }
-    catch { const r = document.createRange(); r.selectNodeContents($("#email")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); say("Email selected, press ⌘C"); }
-  }
-  $("#copy").addEventListener("click", copyEmail);
+  const selectEmail = () => { const el = $("#email"); const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+  const copyEmail = () => {
+    const done = () => say("Email copied");
+    const fail = () => { selectEmail(); say("Email selected: press Ctrl+C or Cmd+C"); };
+    try { navigator.clipboard ? navigator.clipboard.writeText(EMAIL).then(done, fail) : fail(); } catch { fail(); }
+  };
+  $$("[data-copy-email]").forEach(b => b.addEventListener("click", copyEmail));
 
-  /* ---------- command palette ---------- */
+  /* ---------- active tab in the top bar ---------- */
+  const navLinks = $$(".tabs a");
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) navLinks.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id));
+  }), { rootMargin: "-40% 0px -55% 0px" });
+  ["lobby", "stats", "collection", "career", "arsenal", "records", "contact"].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
+
+  /* ---------- project loadout tabs ---------- */
+  const tabs = $$(".ltab");
+  const select = (key, focus) => {
+    tabs.forEach(t => {
+      const on = t.id === "tab-" + key;
+      t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+      if (on && focus) t.focus();
+    });
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => select(t.id.slice(4)));
+    t.addEventListener("keydown", e => {
+      const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (!d) return; e.preventDefault();
+      select(tabs[(i + d + tabs.length) % tabs.length].id.slice(4), true);
+    });
+  });
+  const openProject = key => { select(key); $("#collection").scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); };
+  $$("[data-project]").forEach(el => el.addEventListener("click", e => { e.preventDefault(); openProject(el.dataset.project); }));
+
+  /* ---------- image swaps (demo gif, results chart) ---------- */
+  $$(".swap").forEach(b => {
+    const img = document.getElementById(b.dataset.target), orig = img.src, label = b.textContent;
+    b.addEventListener("click", () => {
+      const on = b.getAttribute("aria-pressed") !== "true";
+      img.src = on ? b.dataset.altSrc : orig;
+      if (b.dataset.altClass) img.classList.toggle(b.dataset.altClass, on);
+      b.setAttribute("aria-pressed", on); b.textContent = on ? "Show card" : label;
+    });
+  });
+
+  /* ---------- find match ---------- */
+  const match = $("#match"), search = $("#mf-search"), found = $("#mf-found"), timer = $("#mf-timer");
+  let mt, ti, lastFocus;
+  const closeMatch = () => { match.hidden = true; clearTimeout(mt); clearInterval(ti); lastFocus && lastFocus.focus(); };
+  const showFound = () => { clearInterval(ti); search.hidden = true; found.hidden = false; found.querySelector("[data-copy-email]").focus(); };
+  $("#find").addEventListener("click", e => {
+    lastFocus = e.currentTarget; match.hidden = false;
+    if (reduce) return showFound();
+    search.hidden = false; found.hidden = true; $("#mf-close").focus();
+    let s = 0; timer.textContent = "0:00";
+    ti = setInterval(() => { s++; timer.textContent = "0:0" + s; }, 1000);
+    mt = setTimeout(showFound, 2200);
+  });
+  $("#mf-close").addEventListener("click", closeMatch);
+  match.addEventListener("click", e => { if (e.target === match) closeMatch(); });
+
+  /* ---------- jump-to palette ---------- */
   const pal = $("#palette"), input = $("#pal-input"), list = $("#pal-list");
-  const go = id => () => document.getElementById(id).scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-  const openUrl = u => () => { const a = document.createElement("a"); a.href = u; a.target = "_blank"; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove(); };
-  const showProject = id => () => { select(document.getElementById(id)); go("projects")(); };
   const items = [
-    ["#", "By the numbers", "Section", go("numbers")], ["#", "Professional summary", "Section", go("about")],
-    ["#", "Projects", "Section", go("projects")], ["#", "Experience", "Section", go("experience")],
-    ["#", "Publications & education", "Section", go("publications")], ["#", "Contact", "Section", go("contact")],
-    ["◇", "PaperMind: explore", "Project", showProject("tab-pm")], ["◇", "SentryEye: explore", "Project", showProject("tab-se")],
-    ["◇", "E-Commerce RecSys: explore", "Project", showProject("tab-rs")], ["◇", "CodeAgent: explore", "Project", showProject("tab-ca")],
-    ["↗", "PaperMind on GitHub", "Link", openUrl("https://github.com/Enoch-Nemili/papermind")],
-    ["↗", "SentryEye on GitHub", "Link", openUrl("https://github.com/Enoch-Nemili/sentryeye")],
-    ["↗", "E-Commerce RecSys on GitHub", "Link", openUrl("https://github.com/Enoch-Nemili/ecommerce-recsys")],
-    ["↗", "CodeAgent on GitHub", "Link", openUrl("https://github.com/Enoch-Nemili/codeagent-ai")],
-    ["↗", "GitHub profile", "Link", openUrl("https://github.com/Enoch-Nemili")],
-    ["↗", "LinkedIn", "Link", openUrl("https://www.linkedin.com/in/enoch-nemili/")],
-    ["@", "Copy email address", "Action", copyEmail],
+    ["Lobby", "section", () => go("#lobby")], ["Career stats", "section", () => go("#stats")],
+    ["Projects", "section", () => go("#collection")], ["Career", "section", () => go("#career")],
+    ["Arsenal (skills)", "section", () => go("#arsenal")], ["Publications & education", "section", () => go("#records")],
+    ["Contact", "section", () => go("#contact")],
+    ["skillbench", "project", () => openProject("sb")], ["PaperMind", "project", () => openProject("pm")],
+    ["SentryEye", "project", () => openProject("se")], ["E-Commerce RecSys", "project", () => openProject("rs")],
+    ["CodeAgent", "project", () => openProject("ca")],
+    ["Copy email", "action", copyEmail], ["Find match", "action", () => $("#find").click()],
+    ["GitHub", "link", () => open("https://github.com/Enoch-Nemili", "_blank", "noopener")],
+    ["LinkedIn", "link", () => open("https://www.linkedin.com/in/enoch-nemili/", "_blank", "noopener")]
   ];
-  let shown = [], sel = 0, lastFocus = null;
-  function render() {
+  function go(h) { document.querySelector(h).scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); }
+  let shown = [], sel = 0, palFocus;
+  const render = () => {
     const q = input.value.trim().toLowerCase();
-    shown = items.filter(([, label, group]) => !q || (label + " " + group).toLowerCase().includes(q));
-    sel = Math.min(sel, Math.max(shown.length - 1, 0));
-    list.innerHTML = shown.length ? shown.map(([ic, label, group], i) =>
-      `<li role="option" id="opt-${i}" aria-selected="${i === sel}"><span class="ic">${ic}</span>${label}<span class="g">${group}</span></li>`).join("")
-      : `<div class="empty">No matches. Try "projects", "github" or "email".</div>`;
-    input.setAttribute("aria-activedescendant", shown.length ? `opt-${sel}` : "");
-    list.querySelectorAll("li").forEach((li, i) => { li.addEventListener("click", () => run(i)); li.addEventListener("pointermove", () => { if (sel !== i) { sel = i; render(); } }); });
-    const cur = list.querySelector('[aria-selected="true"]'); if (cur) cur.scrollIntoView({ block: "nearest" });
-  }
-  function openPal() { lastFocus = document.activeElement; pal.hidden = false; input.value = ""; sel = 0; render(); input.focus(); }
-  function closePal() { pal.hidden = true; if (lastFocus) lastFocus.focus(); }
-  function run(i) { const it = shown[i]; if (!it) return; closePal(); it[3](); }
+    shown = items.filter(([n, k]) => !q || (n + " " + k).toLowerCase().includes(q));
+    sel = Math.min(sel, Math.max(0, shown.length - 1));
+    list.innerHTML = "";
+    shown.forEach(([n, k], i) => {
+      const li = document.createElement("li"); li.setAttribute("role", "option"); li.setAttribute("aria-selected", i === sel);
+      li.innerHTML = `<b></b><span></span>`; li.firstChild.textContent = n; li.lastChild.textContent = k;
+      li.addEventListener("click", () => run(i)); list.appendChild(li);
+    });
+  };
+  const run = i => { const it = shown[i]; if (!it) return; closePal(); it[2](); };
+  const openPal = () => { palFocus = document.activeElement; pal.hidden = false; input.value = ""; sel = 0; render(); input.focus(); };
+  const closePal = () => { pal.hidden = true; palFocus && palFocus.focus && palFocus.focus(); };
   $("#open-palette").addEventListener("click", openPal);
-  pal.addEventListener("click", e => { if (e.target === pal) closePal(); });
   input.addEventListener("input", () => { sel = 0; render(); });
   input.addEventListener("keydown", e => {
-    if (e.key === "ArrowDown") { e.preventDefault(); sel = (sel + 1) % Math.max(shown.length, 1); render(); }
-    else if (e.key === "ArrowUp") { e.preventDefault(); sel = (sel - 1 + shown.length) % Math.max(shown.length, 1); render(); }
+    if (e.key === "ArrowDown") { e.preventDefault(); sel = (sel + 1) % Math.max(1, shown.length); render(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); sel = (sel - 1 + shown.length) % Math.max(1, shown.length); render(); }
     else if (e.key === "Enter") { e.preventDefault(); run(sel); }
   });
-  document.addEventListener("keydown", e => {
+  pal.addEventListener("click", e => { if (e.target === pal) closePal(); });
+  addEventListener("keydown", e => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); pal.hidden ? openPal() : closePal(); }
-    else if (e.key === "/" && pal.hidden && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); openPal(); }
-    else if (e.key === "Escape" && !pal.hidden) closePal();
+    else if (e.key === "Escape") { if (!pal.hidden) closePal(); else if (!match.hidden) closeMatch(); }
   });
 
-  /* ---------- resume button: enabled only when resume.pdf exists ---------- */
-  fetch("resume.pdf", { method: "HEAD" }).then(r => { if (!r.ok) throw 0; }).catch(() => {
-    $$(".resume-btn").forEach(a => { a.setAttribute("aria-disabled", "true"); a.title = "Resume coming soon"; a.removeAttribute("href"); });
-  });
+  /* ---------- liquid-gold veins: a flow field, drawn once per resize ---------- */
+  const vc = $("#veins"), vx = vc.getContext("2d");
+  const P = new Uint8Array(512); { const q = [...Array(256).keys()]; let sd = 7;
+    for (let i = 255; i > 0; i--) { sd = (sd * 16807) % 2147483647; const j = sd % (i + 1); [q[i], q[j]] = [q[j], q[i]]; }
+    for (let i = 0; i < 512; i++) P[i] = q[i & 255]; }
+  const fade = t => t * t * t * (t * (t * 6 - 15) + 10), lerp = (a, b, t) => a + (b - a) * t;
+  const grad = (h, x, y) => ((h & 1) ? -x : x) + ((h & 2) ? -y : y);
+  const noise = (x, y) => { const X = Math.floor(x) & 255, Y = Math.floor(y) & 255; x -= Math.floor(x); y -= Math.floor(y);
+    const u = fade(x), v = fade(y), a = P[X] + Y, b = P[X + 1] + Y;
+    return lerp(lerp(grad(P[a], x, y), grad(P[b], x - 1, y), u), lerp(grad(P[a + 1], x, y - 1), grad(P[b + 1], x - 1, y - 1), u), v); };
+  let rs = 42; const rnd = () => (rs = (rs * 16807) % 2147483647) / 2147483647;
+  const gauss = () => (rnd() + rnd() + rnd() - 1.5) / 1.5;
+  function drawVeins() {
+    const d = Math.min(devicePixelRatio || 1, 2), w = innerWidth, h = innerHeight, m = Math.min(w, h);
+    vc.width = w * d; vc.height = h * d; vx.setTransform(d, 0, 0, d, 0, 0); vx.clearRect(0, 0, w, h);
+    rs = 42; vx.globalCompositeOperation = "lighter"; vx.lineCap = "round";
+    // the main band sweeps from bottom-centre up and round to the top-right, like poured metal
+    const B = [[w * .38, h * 1.12], [w * .48, h * .55], [w * .98, h * .70], [w * .80, h * .05]];
+    const bez = t => { const u = 1 - t; return [0, 1].map(k => u*u*u*B[0][k] + 3*u*u*t*B[1][k] + 3*u*t*t*B[2][k] + t*t*t*B[3][k]); };
+    const vein = (x, y, tan, steps, width, color, alpha) => {
+      vx.strokeStyle = color; vx.globalAlpha = alpha; vx.lineWidth = width; vx.beginPath(); vx.moveTo(x, y);
+      for (let k = 0; k < steps; k++) {
+        const n = noise(x * .0022, y * .0022);
+        const a = tan + n * 2.4;
+        x += Math.cos(a) * 2.4; y += Math.sin(a) * 2.4; vx.lineTo(x, y);
+      }
+      vx.stroke();
+    };
+    const golds = ["#C9A55E", "#E6CB8E", "#9C7A3A"], count = w < 700 ? 380 : 900;
+    for (let i = 0; i < count; i++) {
+      const t = rnd(), [bx, by] = bez(t), [nx, ny] = bez(Math.min(1, t + .01));
+      const tan = Math.atan2(ny - by, nx - bx) + (rnd() < .5 ? 0 : Math.PI);
+      const spread = m * (.05 + .10 * Math.sin(t * Math.PI));
+      vein(bx + gauss() * spread, by + gauss() * spread, tan, 60 + rnd() * 120, .5 + rnd() * 1.6, golds[i % 3], .04 + rnd() * .06);
+    }
+    for (let i = 0; i < 70; i++) { // bright glints along the band
+      const t = rnd(), [bx, by] = bez(t), [nx, ny] = bez(Math.min(1, t + .01));
+      vein(bx + gauss() * m * .06, by + gauss() * m * .06, Math.atan2(ny - by, nx - bx), 40 + rnd() * 60, .7, "#F7E6BB", .18 + rnd() * .16);
+    }
+    for (let i = 0; i < (w < 700 ? 60 : 160); i++) // faint smoke everywhere else
+      vein(rnd() * w, rnd() * h, rnd() * 6.28, 80 + rnd() * 80, 1 + rnd() * 3, "#8C6C32", .012 + rnd() * .018);
+    vx.globalCompositeOperation = "source-over"; vx.globalAlpha = .45; vx.strokeStyle = "#E6CB8E"; vx.lineWidth = 1.2;
+    for (const [fx, fy, r] of [[.33, .2, 16], [.33, .84, 14], [.71, .16, 10]]) { // four-point sparkles
+      const x = fx * w, y = fy * h; vx.beginPath();
+      for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4, rr = k % 2 ? r * .28 : r; vx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+      vx.closePath(); vx.stroke();
+    }
+    vx.globalAlpha = 1;
+  }
+  drawVeins();
+
+  /* ---------- gold motes ---------- */
+  const cv = $("#motes"), cx = cv.getContext("2d");
+  let W = 0, H = 0, motes = [], run2 = true;
+  const size = () => { const d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * d; cv.height = H * d; cx.setTransform(d, 0, 0, d, 0, 0); };
+  const mk = y => ({ x: Math.random() * W, y: y ?? Math.random() * H, r: .6 + Math.random() * 1.6, v: .15 + Math.random() * .45, a: .15 + Math.random() * .5, p: Math.random() * 6.28 });
+  const seed = () => { motes = Array.from({ length: Math.round(Math.min(110, W / 12)) }, () => mk()); };
+  const draw = t => {
+    cx.clearRect(0, 0, W, H);
+    for (const m of motes) {
+      if (!reduce) { m.y -= m.v; m.x += Math.sin(t / 1400 + m.p) * .25 + m.v * .4; if (m.y < -6 || m.x > W + 6) Object.assign(m, mk(H + 6)); }
+      cx.globalAlpha = m.a * (.7 + .3 * Math.sin(t / 700 + m.p));
+      cx.fillStyle = m.r > 1.6 ? "#F2DCA6" : "#D4B06A";
+      cx.beginPath(); cx.arc(m.x, m.y, m.r, 0, 6.283); cx.fill();
+    }
+    cx.globalAlpha = 1;
+  };
+  size(); seed();
+  if (reduce) draw(0);
+  else {
+    const loop = t => { if (run2) draw(t); requestAnimationFrame(loop); }; requestAnimationFrame(loop);
+    document.addEventListener("visibilitychange", () => { run2 = !document.hidden; });
+  }
+  let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { size(); seed(); drawVeins(); if (reduce) draw(0); }, 150); });
 })();
 </script>
 
