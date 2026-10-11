@@ -158,11 +158,13 @@ main, footer { position: relative; z-index: 1; }
 .slot .in { position: absolute; inset: 1.5px; display: flex; flex-direction: column; overflow: hidden;
   background: linear-gradient(180deg, #16203A 0%, #0F1626 70%, #0C111C 100%); clip-path: polygon(0 0, 100% 0, 100% 86%, 50% 100%, 0 86%); }
 .slot .cap { height: 3px; background: #6E7A93; flex: none; }
-.slot .pic { position: relative; height: 36%; flex: none; overflow: hidden; display: grid; place-items: center;
+.slot .pic { position: relative; height: 38%; flex: none; overflow: hidden; display: grid; place-items: center; padding-top: 16px;
   background: repeating-linear-gradient(135deg, rgba(212,176,106,.07) 0 2px, transparent 2px 12px), radial-gradient(80% 90% at 50% 20%, rgba(212,176,106,.22), transparent 70%), #121A2B; }
 .slot .pic::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, #101727 100%); }
 .slot .emb { position: relative; z-index: 1; display: grid; place-items: center; width: 56%; aspect-ratio: 1; border: 1.5px solid var(--gold); transform: rotate(45deg); transition: background .25s, transform .4s; }
-.slot .emb b { transform: rotate(-45deg); font-family: var(--display); font-weight: 900; font-size: clamp(18px, 1.6vw, 26px); color: var(--gold-hi); letter-spacing: .02em; }
+.slot .emb img { width: 70%; height: 70%; transform: rotate(-45deg); }
+.slot .pnum { position: absolute; top: 9px; left: 0; right: 0; z-index: 2; font: 600 10px/1 var(--ui); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.slot:hover .pnum { color: var(--gold-hi); }
 .slot .txt { display: grid; grid-template-rows: auto 2.5em auto; gap: 6px; padding: 12px 8px 0; justify-items: center; align-items: start; }
 .slot .txt b { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--display); font-weight: 800; font-size: clamp(14px, 1.2vw, 19px); line-height: 1; text-transform: uppercase; letter-spacing: .01em; }
 .slot .txt span { font-family: var(--ui); font-size: 13px; font-weight: 500; letter-spacing: .05em; color: var(--muted); line-height: 1.25; }
@@ -525,13 +527,13 @@ footer .in { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; 
       <div class="lineup" aria-label="Party: Enoch and four projects">
         <button class="slot" type="button" data-project="se" aria-label="Open SentryEye">
           <span class="frame"><span class="in"><span class="cap"></span>
-            <span class="pic" aria-hidden="true"><span class="emb"><b>SE</b></span></span>
+            <span class="pic" aria-hidden="true"><span class="pnum">Project 1</span><span class="emb"><img src="assets/icons/sentryeye.svg" alt="" width="64" height="64"></span></span>
             <span class="txt"><b>SentryEye</b><span class="tagl">Vision-LLM cascade</span><span class="ver">v1.0.0</span></span>
             <span class="plus"><svg><use href="#i-plus"/></svg></span></span></span>
         </button>
         <button class="slot" type="button" data-project="pm" aria-label="Open PaperMind">
           <span class="frame"><span class="in"><span class="cap"></span>
-            <span class="pic" aria-hidden="true"><span class="emb"><b>PM</b></span></span>
+            <span class="pic" aria-hidden="true"><span class="pnum">Project 2</span><span class="emb"><img src="assets/icons/papermind.svg" alt="" width="64" height="64"></span></span>
             <span class="txt"><b>PaperMind</b><span class="tagl">MCP · RAG · evals</span><span class="ver">v1.0.1</span></span>
             <span class="plus"><svg><use href="#i-plus"/></svg></span></span></span>
         </button>
@@ -547,13 +549,13 @@ footer .in { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; 
         </div>
         <button class="slot" type="button" data-project="rs" aria-label="Open E-Commerce RecSys">
           <span class="frame"><span class="in"><span class="cap"></span>
-            <span class="pic" aria-hidden="true"><span class="emb"><b>RS</b></span></span>
+            <span class="pic" aria-hidden="true"><span class="pnum">Project 3</span><span class="emb"><img src="assets/icons/recsys.svg" alt="" width="64" height="64"></span></span>
             <span class="txt"><b>RecSys</b><span class="tagl">Spark · Java · Kafka</span><span class="ver">v1.0.0</span></span>
             <span class="plus"><svg><use href="#i-plus"/></svg></span></span></span>
         </button>
         <button class="slot" type="button" data-project="ca" aria-label="Open CodeAgent">
           <span class="frame"><span class="in"><span class="cap"></span>
-            <span class="pic" aria-hidden="true"><span class="emb"><b>CA</b></span></span>
+            <span class="pic" aria-hidden="true"><span class="pnum">Project 4</span><span class="emb"><img src="assets/icons/codeagent.svg" alt="" width="64" height="64"></span></span>
             <span class="txt"><b>CodeAgent</b><span class="tagl">Multi-agent review</span><span class="ver">v0.1.0</span></span>
             <span class="plus"><svg><use href="#i-plus"/></svg></span></span></span>
         </button>
