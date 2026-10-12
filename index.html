@@ -211,24 +211,31 @@ main, footer { position: relative; z-index: 1; }
 .find:focus-visible { outline-color: var(--gold-hi); }
 .find-wrap small { text-shadow: 0 1px 8px #000; font-family: var(--ui); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 
-/* right column: news cards */
+/* right column: news */
+.right { gap: 12px; align-content: start; }
 .news { position: relative; display: grid; text-decoration: none; overflow: hidden; border: 1px solid #3A4459; background: var(--panel); transition: border-color .2s, transform .2s; }
 .news:hover { border-color: var(--gold); transform: translateY(-2px); }
-.news .head { padding: 14px 14px 12px; display: grid; gap: 6px; }
-.news h3 { font-family: var(--display); font-weight: 800; font-size: 25px; line-height: .95; text-transform: uppercase; letter-spacing: .01em; }
+.news .head { padding: 12px 14px 14px; display: grid; gap: 5px; }
+.news h3 { font-family: var(--display); font-weight: 800; font-size: 22px; line-height: .95; text-transform: uppercase; letter-spacing: .01em; }
 .news p { font-size: 14px; line-height: 1.4; color: #C6CBD5; }
-.news .k { font: 500 12px/1 var(--mono); color: var(--gold); letter-spacing: .04em; }
-.news.feat .visual { height: 128px; position: relative; overflow: hidden;
+.k { font: 500 11px/1.2 var(--mono); color: var(--gold); letter-spacing: .06em; text-transform: uppercase; }
+.news.feat .visual { height: 92px; position: relative; overflow: hidden;
   background: radial-gradient(80% 90% at 70% 10%, rgba(212,176,106,.35), transparent 60%), linear-gradient(160deg, #23304A, #0D1320); }
-.news.feat .visual .score { position: absolute; left: 14px; top: 16px; display: flex; align-items: baseline; gap: 10px; font-family: var(--display); font-weight: 900; line-height: .85; }
-.news.feat .visual .score s { text-decoration: none; font-size: 44px; color: #7F8AA0; }
-.news.feat .visual .score em { font-style: normal; font-size: 22px; color: var(--gold); }
-.news.feat .visual .score b { font-size: 64px; color: var(--gold-hi); text-shadow: 0 0 24px rgba(242,220,166,.35); }
-.news.feat .visual .cap2 { position: absolute; left: 14px; bottom: 10px; font: 500 12px/1.2 var(--mono); color: #C6CBD5; }
-.news.mission { border-color: rgba(83,211,180,.4); background: linear-gradient(135deg, rgba(83,211,180,.1), var(--panel) 60%); }
-.news.mission .k { color: var(--ready); }
-.news.notes { border-left: 3px solid var(--red); }
-.news.notes h3 { font-size: 22px; }
+.news.feat .visual .score { position: absolute; left: 14px; bottom: 12px; display: flex; align-items: baseline; gap: 10px; font-family: var(--display); font-weight: 900; line-height: .85; }
+.news.feat .visual .score s { text-decoration: none; font-size: 34px; color: #7F8AA0; }
+.news.feat .visual .score em { font-style: normal; font-size: 18px; color: var(--gold); }
+.news.feat .visual .score b { font-size: 52px; color: var(--gold-hi); text-shadow: 0 0 24px rgba(242,220,166,.35); }
+.feed { display: grid; border: 1px solid #3A4459; background: var(--panel); }
+.feed .row { display: grid; gap: 3px; padding: 12px 14px; text-decoration: none; transition: background .2s; }
+.feed .row + .row { border-top: 1px solid var(--line); }
+.feed .row:hover { background: var(--panel-2); }
+.feed .row b { font-family: var(--ui); font-weight: 700; font-size: 17px; letter-spacing: .03em; text-transform: uppercase; line-height: 1.15; }
+.feed .row .d { font-size: 13.5px; color: var(--muted); }
+.feed .k.mission { color: var(--ready); }
+.news.notes { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 14px; border-left: 3px solid var(--red); }
+.news.notes b { font-family: var(--display); font-weight: 800; font-size: 18px; text-transform: uppercase; white-space: nowrap; }
+.news.notes .k { white-space: nowrap; }
+.news.notes .k { color: var(--muted); }
 
 /* friends rail */
 .rail { display: grid; gap: 8px; align-content: start; justify-items: center; padding: 8px 0; background: rgba(14,19,29,.85); border-left: 1px solid var(--line); min-height: 100%; }
@@ -517,7 +524,7 @@ footer .in { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; 
 
     <div class="center">
       <div class="dailies">
-        <div class="q">Industry<span><b>3+ yrs</b> · 3 companies</span></div>
+        <div class="q">Industry<span><b>3+ yrs</b> experience</span></div>
         <div class="dia" title="Projects shipped"><b>5</b></div>
         <div class="q" style="text-align:left">Shipped<span><b>5</b> projects</span></div>
         <span class="sep" aria-hidden="true"></span>
@@ -571,25 +578,16 @@ footer .in { max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; 
       <a class="news feat" href="https://github.com/Enoch-Nemili/skillbench" target="_blank" rel="noopener">
         <div class="visual" aria-hidden="true">
           <div class="score"><s>0/6</s><em>→</em><b>6/6</b></div>
-          <div class="cap2">debugging tasks fully passed<br>without → with the skill</div>
         </div>
-        <div class="head"><span class="k">FEATURED · SKILLBENCH v1.0.0</span>
+        <div class="head"><span class="k">Featured · skillbench v1.0</span>
           <h3>Skills, measured</h3>
-          <p>Four Agent Skills and the harness that tests them. With repro-before-fix loaded, every answer wrote a test that fails on the bug.</p></div>
+          <p>Debugging tasks passed: 0/6 without the skill, 6/6 with it.</p></div>
       </a>
-      <a class="news mission" href="#contact">
-        <div class="head"><span class="k">NEXT MISSION · IN PROGRESS</span>
-          <h3>ServeLab</h3>
-          <p>An LLM serving performance lab: throughput, latency and cost under real load.</p></div>
-      </a>
-      <a class="news" href="#records">
-        <div class="head"><span class="k">NEW PAPER · ACSOS 2026</span>
-          <h3>Semantic resource elasticity</h3>
-          <p>Co-author of a vision paper on adapting edge computation to what a scene actually needs.</p></div>
-      </a>
-      <a class="news notes" href="#collection" data-project="sb">
-        <div class="head"><h3>Patch notes</h3><span class="k">2026.10 · skillbench v1.0.0 · new lobby</span></div>
-      </a>
+      <div class="feed">
+        <a class="row" href="#contact"><span class="k mission">Next mission</span><b>ServeLab</b><span class="d">LLM serving performance lab</span></a>
+        <a class="row" href="#records"><span class="k">New paper · ACSOS 2026</span><b>Semantic resource elasticity</b><span class="d">Co-author, edge computing</span></a>
+      </div>
+      <a class="news notes" href="#collection" data-project="sb"><b>Patch notes</b><span class="k">2026.10 · new lobby</span></a>
     </aside>
 
     <nav class="rail" aria-label="Elsewhere">
